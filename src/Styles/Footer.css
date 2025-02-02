@@ -1,0 +1,122 @@
+/* Footer Container */
+.footer {
+    background-color: #1e2a38; /* Dark background for sophistication */
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Main Footer Content */
+.footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.footer-brand {
+    max-width: 250px;
+    text-align: left;
+}
+
+.footer-logo {
+    font-size: 36px;
+    color: #1a8efd;
+    font-weight: bold;
+}
+
+.footer-tagline {
+    font-size: 18px;
+    color: #d0d4db;
+    margin-top: 10px;
+}
+
+/* Footer Links Section */
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.footer-links-column {
+    flex: 1;
+    min-width: 200px;
+}
+
+.footer-links-column h3 {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.footer-links-column ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.footer-links-column ul li {
+    margin: 8px 0;
+}
+
+.footer-links-column ul li a {
+    font-size: 16px;
+    color: #d0d4db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links-column ul li a:hover {
+    color: #1a8efd;
+}
+
+/* Social Media Section */
+.footer-social {
+    margin-top: 30px;
+}
+
+.social-icons {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.social-icons li a {
+    color: #d0d4db;
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-icons li a:hover {
+    color: #1a8efd;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    text-align: center;
+    margin-top: 40px;
+    border-top: 1px solid #444;
+    padding-top: 15px;
+}
+
+.footer-bottom p {
+    font-size: 14px;
+    color: #d0d4db;
+    margin: 0;
+}

@@ -1,0 +1,14 @@
+import { Route, Routes } from 'react-router-dom'
+import Home from './Home';
+
+const CustomRoutesPages = () => {
+  return (
+    <div>
+      <Routes>
+          <Route path='/*' element={<Home/>}/>
+      </Routes>
+    </div>
+  )
+}
+
+export default CustomRoutesPages;
