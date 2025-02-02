@@ -1,7 +1,7 @@
 import { Card, Row, Col, Typography, Button, Carousel, Layout } from 'antd';
 import { displayImage } from "../../Api & Services/Api.js";
 import { PhoneOutlined, MailOutlined, GlobalOutlined, HomeOutlined, FieldTimeOutlined, ShopOutlined, SafetyCertificateOutlined, HeartOutlined, HddOutlined, EnvironmentOutlined, BankOutlined, CompassOutlined } from '@ant-design/icons'; 
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import { stringToList } from '../../Api & Services/Services.js';
 
 const { Title, Text } = Typography;
@@ -172,24 +172,26 @@ const HospitalInfo = ({ hospital }) => {
                       Specialities
                     </Title>
                     <Text style={{ fontSize: '18px' }}>
-                        {stringToList(hospital.specialities).map((statement, index) => (
-                          <li key={index}>
-                            <strong>{statement.heading}: </strong>{statement.descriptionText}
-                          </li>
+                      <ul>
+                        {hospital.specialities.map((partner, index) => (
+                          <li key={index}><strong>{partner}</strong></li>
                         ))}
+                      </ul>
                     </Text>
                   </div>
                   <div>
                     <Title level={2} style={{ color: '#457b9d', marginBottom: 5, marginTop: 10 }}>
                       <ShopOutlined style={{ marginRight: '8px' }} />
-                      Pharmacy Technology
+                      Hospital Technology
                     </Title>
                     <Text style={{ fontSize: '18px' }}>
-                        {stringToList(hospital.technology).map((statement, index) => (
-                          <li key={index}>
-                            <strong>{statement.heading}: </strong>{statement.descriptionText}
-                          </li>
-                        ))}
+                          <ul>
+                            {stringToList(hospital.technology).map((statement, index) => (
+                              <li key={index}>
+                                <strong>{statement.heading}: </strong>{statement.descriptionText}
+                              </li>
+                            ))}
+                          </ul>
                     </Text>
                   </div>
 
@@ -215,10 +217,8 @@ const HospitalInfo = ({ hospital }) => {
                     </Title>
                     <Text style={{ fontSize: '18px' }}>
                       <ul>
-                        {stringToList(hospital.insurancePartners).map((statement, index) => (
-                          <li key={index}>
-                            <strong>{statement.heading}: </strong>{statement.descriptionText}
-                          </li>
+                        {hospital.insurancePartners.map((partner, index) => (
+                          <li key={index}><strong>{partner}</strong></li>
                         ))}
                       </ul>
                     </Text>
@@ -249,7 +249,7 @@ HospitalInfo.propTypes = {
     operationTheaters: PropTypes.number.isRequired,
     technology: PropTypes.string.isRequired,
     accreditations: PropTypes.string.isRequired,
-    insurancePartners: PropTypes.string.isRequired,
+    insurancePartners: PropTypes.arrayOf(string).isRequired,
     address: PropTypes.shape({
       street: PropTypes.string.isRequired,
       city: PropTypes.string.isRequired,

@@ -1,7 +1,7 @@
 import { Card, Row, Col, Typography, Button, Carousel, Layout, message } from 'antd';
 import { displayImage, pharmacyURL } from '../../Api & Services/Api';
 import { PhoneOutlined, MailOutlined, GlobalOutlined, HomeOutlined, FieldTimeOutlined, ShopOutlined } from '@ant-design/icons'; 
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 import axios from 'axios';
 import { stringToList } from '../../Api & Services/Services';
 
@@ -14,6 +14,13 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
     const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
     window.open(url, '_blank');
   };
+
+  const isBefore = ((closingTime) => {
+    const [hours, minutes, seconds] = closingTime.split(':').map(Number);
+    const closingTimeDate = new Date();
+    closingTimeDate.setHours(hours, minutes, seconds, 0);
+    return closingTimeDate > new Date();
+  })
 
   const handleToggleStatus = async () => {
     try {
@@ -118,7 +125,11 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
                           marginLeft: 5,
                           marginTop: '16px',
                           fontSize: '18px',
+                          opacity: isBefore(Pharmacy.closingTime) ? 0.5 : 1,
+                          cursor: isBefore(Pharmacy.closingTime) ? 'not-allowed' : 'pointer',
+                          color: 'white'
                         }}
+                        disabled={isBefore(Pharmacy.closingTime)}
                         onClick={handleToggleStatus}
                       >
                         {Pharmacy.open ? 'Opened' : 'Closed'}
@@ -213,7 +224,15 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
                         <ShopOutlined style={{ marginRight: '8px' }} />
                         Pharmacy Technology
                       </Title>
-                      <Text style={{ fontSize: '18px' }}>{Pharmacy.pharmacyTechnology}</Text>
+                      <Text style={{ fontSize: '18px' }}>
+                      <ul>
+                          {stringToList(Pharmacy.pharmacyTechnology).map((statement, index) => (
+                            <li key={index}>
+                              <strong>{statement.heading}: </strong>{statement.descriptionText}
+                            </li>
+                          ))}
+                        </ul>
+                      </Text>
                     </div>
 
                     <div>
@@ -239,10 +258,8 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
                       </Title>
                       <Text style={{ fontSize: '18px' }}>
                         <ul>
-                          {stringToList(Pharmacy.insurancePartners).map((statement, index) => (
-                            <li key={index}>
-                              <strong>{statement.heading}: </strong>{statement.descriptionText}
-                            </li>
+                          {Pharmacy.insurancePartners.map((partner, index) => (
+                            <li key={index}><strong>{partner}</strong></li>
                           ))}
                         </ul>
                       </Text>
@@ -265,7 +282,7 @@ PharmacyInfo.propTypes = {
     services: PropTypes.string.isRequired,
     pharmacyTechnology: PropTypes.string.isRequired,
     accreditations: PropTypes.string.isRequired,
-    insurancePartners: PropTypes.string.isRequired,
+    insurancePartners: PropTypes.arrayOf(string).isRequired,
     mobile: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     website: PropTypes.string.isRequired,

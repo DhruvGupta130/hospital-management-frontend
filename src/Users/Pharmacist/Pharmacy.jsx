@@ -27,7 +27,7 @@ const Pharmacy = () => {
     services: '',
     pharmacyTechnology: '',
     accreditations: '',
-    insurancePartners: '',
+    insurancePartners: [],
     address: {
       street: '',
       city: '',
@@ -43,7 +43,7 @@ const Pharmacy = () => {
     openingTime: '',
     closingTime: '',
     images: [],
-  });
+  });  
   const [fileList, setFileList] = useState([]);
   const { Step } = Steps;
 
@@ -124,7 +124,7 @@ const Pharmacy = () => {
     services: '',
     pharmacyTechnology: '',
     accreditations: '',
-    insurancePartners: '',
+    insurancePartners: [],
     address: {
       street: '',
       city: '',
@@ -153,6 +153,7 @@ const Pharmacy = () => {
     }    
     console.log(newPharmacy);
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post(`${pharmacyURL}/register`, newPharmacy, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -304,8 +305,9 @@ const Pharmacy = () => {
       title: 'Basic Details',
       content: (
         <Form layout="vertical">
-          {['pharmacyName', 'email', 'mobile', 'website', 'openingTime', 'closingTime'].map((field) => (
+          {['pharmacyName', 'email', 'mobile', 'website', 'openingTime', 'closingTime'].map((field, index) => (
             <Form.Item 
+            key={index}
             label={generateLabel(field)}
             >   
               <Input
@@ -323,16 +325,26 @@ const Pharmacy = () => {
       title: 'Description',
       content: (
         <Form layout="vertical">
-          {['overview', 'services', 'pharmacyTechnology', 'accreditations', 'insurancePartners'].map((field) =>
+          {['overview', 'services', 'pharmacyTechnology', 'accreditations', 'insurancePartners'].map((field, index) =>
             <Form.Item 
+              key={index}
               label={generateLabel(field)}
             >  
-              <Input.TextArea
-                name={field}
-                value={newPharmacy[field]}
-                onChange={handleInputChange}
-                rows={4}
-              />
+              {field === "insurancePartners" ?  
+                <Input.TextArea
+                  value={newPharmacy.insurancePartners.join(", ")}
+                  onChange={(e) => setNewPharmacy(prevState => ({ ...prevState, insurancePartners: e.target.value.split(",") }))}
+                  placeholder="Enter insurancePartners separated by commas"
+                  rows={4}
+                /> : 
+                <Input.TextArea
+                  name={field}
+                  value={newPharmacy[field]}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':'"}
+                />
+              }
             </Form.Item>
           )}
         </Form>

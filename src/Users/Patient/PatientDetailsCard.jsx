@@ -146,11 +146,14 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
 
           {success && <div className='success-message'>{success}</div>}
           {error && <div className='error-message'>{error}</div>}
-
-          {/* Custom Styled File Input */}
+          {imagePreview && (
+            <Box sx={{ marginBottom: 2, textAlign: 'center' }}>
+              <img src={imagePreview} alt="Preview" style={{ width: '60%', maxHeight: '40vh', borderRadius: '8px', marginTop: '10px', border: '5px solid #2a3f54' }} />
+            </Box>
+          )}
           <label htmlFor="file-input" style={{ cursor: 'pointer', marginBottom: '10px' }}>
-            <Button component="span" sx={{ color: 'black', width: '100%' }} className="file-upload">
-              <Image /> {imageFile ? "Change Profile Image" : "Choose Profile Image"}
+            <Button startIcon={<Image />} component="span" sx={{ color: 'black', width: '100%' }} className="file-upload">
+              {imageFile ? "Change Profile Image" : "Choose Profile Image"}
             </Button>
           </label>
           <input
@@ -159,14 +162,6 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
             accept="image/*"
             onChange={handleImageChange}
           />
-
-          {/* Display Image Preview */}
-          {imagePreview && (
-            <Box sx={{ marginTop: 2, textAlign: 'center' }}>
-              <img src={imagePreview} alt="Preview" style={{ width: '60%', maxHeight: '40vh', borderRadius: '8px', marginTop: '10px' }} />
-            </Box>
-          )}
-
           <TextField
             fullWidth
             label="Aadhaar ID"

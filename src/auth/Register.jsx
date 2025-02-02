@@ -14,7 +14,7 @@ function Register() {
     username: "",
     password: "",
     confirmPassword: "",
-    role: "ROLE_PATIENT", 
+    role: "", 
     firstName: "",
     lastName: "",
     gender: "", 
@@ -60,11 +60,6 @@ function Register() {
       gender: formData.gender,
       email: formData.email,
       mobile: formData.mobile,
-      department: formData.department,
-      // Additional fields based on role
-      specialty: formData.specialty,
-      licenseNumber: formData.licenseNumber,
-      hospitalId: formData.hospitalId,
       dateOfBirth: formData.dateOfBirth,
     };
 
@@ -108,6 +103,7 @@ function Register() {
                 onChange={handleChange}
                 required
               >
+                <option value="" disabled >Select Role</option>
                 <option value="ROLE_PATIENT">Patient</option>
                 <option value="ROLE_MANAGEMENT">Hospital Manager</option>
                 <option value="ROLE_PHARMACIST">Pharmacist</option>
@@ -189,7 +185,7 @@ function Register() {
                 onChange={handleChange}
                 required
               >
-                <option value="" disabled>Select Gender</option>
+                <option value="" disabled >Select Gender</option>
                 <option value="MALE">Male</option>
                 <option value="FEMALE">Female</option>
                 <option value="OTHER">Other</option>

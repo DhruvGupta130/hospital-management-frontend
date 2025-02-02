@@ -29,7 +29,6 @@ export const fetchPharmacyProfileData = async (setPharmacy, setLoading, setError
       },
     });
     setPharmacy(response.data);
-    console.log(response.data);
   } catch (error) {
     setError("Error fetching profile data!");
     console.error("Error fetching profile data", error);

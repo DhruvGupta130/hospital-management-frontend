@@ -6,7 +6,7 @@ import { displayImage, doctorURL, URL } from "../../Api & Services/Api.js";
 import "./Doctor.css";
 import { LocalHospital } from "@mui/icons-material";
 import { fetchDoctorHospital, fetchDoctorProfileData } from "./fetchDoctorProfileData";
-import { generateLabel, stringToList } from "../../Api & Services/Services.js";
+import { generateLabel } from "../../Api & Services/Services.js";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -139,7 +139,8 @@ const DoctorProfile = () => {
                   { label: "Gender", value: doctor.gender },
                   { label: "Email", value: doctor.email },
                   { label: "Specialty", value: doctor.specialty },
-                  { label: "Experience", value: `${doctor.experience} Years` },
+                  { label: "Start Date", value: doctor.startDate},
+                  { label: "Experience", value: `${doctor.experience}+ Years` },
                   { label: "License Number", value: doctor.licenseNumber },
                   { label: "Mobile", value: doctor.mobile },
                   { label: "Department", value: doctor.department },
@@ -194,6 +195,7 @@ const DoctorProfile = () => {
         title="Update Doctor Profile"
         open={isModalOpen}
         onCancel={closeModal}
+        loading={load}
         footer={null}
         style={{ borderRadius: "8px" }}
       >

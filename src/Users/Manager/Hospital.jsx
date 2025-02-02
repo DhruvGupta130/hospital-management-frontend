@@ -27,14 +27,14 @@ const Hospital = () => {
     website: '',
     establishedYear: '',
     overview: '',
-    specialities: '',
+    specialities: [],
     emergencyServices: false,
     bedCapacity: '',
     icuCapacity: '',
     operationTheaters: '',
     technology: '',
     accreditations: '',
-    insurancePartners: '',
+    insurancePartners: [],
     address: {
       street: '',
       city: '',
@@ -135,14 +135,14 @@ const Hospital = () => {
       website: '',
       establishedYear: '',
       overview: '',
-      specialities: '',
+      specialities: [],
       emergencyServices: '',
       bedCapacity: '',
       icuCapacity: '',
       operationTheaters: '',
       technology: '',
       accreditations: '',
-      insurancePartners: '',
+      insurancePartners: [],
       address: {
         street: '',
         city: '',
@@ -158,12 +158,14 @@ const Hospital = () => {
   };
 
   const handleRegisterHospital = async () => {
+    console.log(newHospital);
     setLoad(true);
     if (newHospital.images.length === 0 || newHospital.images === null) {
       message.error("Please Upload images");
       return;
     }    
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post(`${hospitalURL}/register`, newHospital, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -341,12 +343,22 @@ const Hospital = () => {
                 >
                   Emergency Services Available
                 </Checkbox>)
-                : (<Input.TextArea
-                name={field}
-                value={newHospital[field]}
-                onChange={handleInputChange}
-                rows={4}
-              />)}
+                : 
+              field === "specialities" ?  
+                <Input.TextArea
+                  value={newHospital.specialities.join(", ")}
+                  onChange={(e) => setNewHospital(prevState => ({ ...prevState, specialities: e.target.value.split(",") }))}
+                  placeholder="Enter hospital specialities separated by commas"
+                  rows={4}
+                /> :
+                <Input.TextArea
+                  name={field}
+                  value={newHospital[field]}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':'"}
+                />
+              }
             </Form.Item>
           )}
         </Form>
@@ -368,14 +380,24 @@ const Hospital = () => {
                   value={newHospital[field]}
                   onChange={handleInputChange}
                   type='number'
+                  placeholder={`Enter ${generateLabel(field)}`}
                 />
               )
-              : (<Input.TextArea
-                name={field}
-                value={newHospital[field]}
-                onChange={handleInputChange}
-                rows={4}
-              />)}
+              : field === "insurancePartners" ?  
+                <Input.TextArea
+                  value={newHospital.insurancePartners.join(", ")}
+                  onChange={(e) => setNewHospital(prevState => ({ ...prevState, insurancePartners: e.target.value.split(",") }))}
+                  placeholder="Enter insurancePartners separated by commas"
+                  rows={4}
+                /> :  
+                <Input.TextArea
+                  name={field}
+                  value={newHospital[field]}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder="Enter pointwise with heading separated by ':'"
+                />
+              }
             </Form.Item>
           )}
         </Form>
