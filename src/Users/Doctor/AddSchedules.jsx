@@ -16,9 +16,8 @@ import { CalendarFilled, ClockCircleFilled, PlusCircleOutlined, SaveOutlined, Su
 import axios from "axios";
 import { doctorURL } from "../../Api & Services/Api.js";
 import { ClearAllOutlined } from "@mui/icons-material";
-import Title from "antd/es/typography/Title.js";
 
-const { Text } = Typography;
+const {Title } = Typography;
 
 const AddSchedules = () => {
   const [schedules, setSchedules] = useState([
@@ -188,7 +187,6 @@ const AddSchedules = () => {
                 <Select
                   value={record.dayOfWeek}
                   onChange={(e) => handleScheduleChange(index, "dayOfWeek", e)}
-                  displayEmpty
                   required
                 >
                   <Select.Option value="" disabled>Select Day</Select.Option>
