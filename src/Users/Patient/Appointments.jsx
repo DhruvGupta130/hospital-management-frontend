@@ -117,8 +117,8 @@ const Appointments = () => {
     if (!slot || !slot.startTime || !slot.endTime) {
       return 'Invalid time slot';
     }
-    const startTimeFormatted = new Date(`1970-01-01T${slot.startTime}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const endTimeFormatted = new Date(`1970-01-01T${slot.endTime}Z`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const startTimeFormatted = new Date(`1970-01-01T${slot.startTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTimeFormatted = new Date(`1970-01-01T${slot.endTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const availability = slot.available ? 'Available' : 'Not Available';
     return `${startTimeFormatted} - ${endTimeFormatted} (${availability})`;
   };
@@ -153,6 +153,7 @@ const Appointments = () => {
       setTimeout(() => setSuccess(""), 2000);
       handleCloseModal();
       fetchAppointments();
+      setSelectedDate('');
     } catch (error) {
       setError(error?.response?.data?.message || "Error booking appointment.");
       console.error("Error booking appointment:", error);

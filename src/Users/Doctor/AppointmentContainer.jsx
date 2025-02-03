@@ -20,10 +20,12 @@ import { formatGender, getAvatarText } from "../../Api & Services/Services.js";
 import {
   CheckCircleOutlined,
   CheckOutlined,
+  ClockCircleFilled,
   ClockCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import PropTypes from "prop-types";
+import { AccessTime, LockClockOutlined } from "@mui/icons-material";
 
 const { TextArea } = Input;
 const { Title, Text } = Typography;
@@ -187,6 +189,7 @@ const Appointment = ({ appointment, refresh }) => {
           {appointment.status === "APPROVED" && <Tag color="green" icon={<CheckCircleOutlined />}>Approved</Tag>}
           {appointment.status === "COMPLETED" && <Tag color="green" icon={<CheckOutlined />}>Completed</Tag>}
           {appointment.status === "CANCELED" && <Tag color="red" icon={<CloseCircleOutlined />}>Canceled</Tag>}
+          {appointment.status === "EXPIRED" && <Tag color="orange" icon={<ClockCircleFilled />}>Expired</Tag>}
         </div>
       </div>
 
@@ -196,7 +199,7 @@ const Appointment = ({ appointment, refresh }) => {
             Move to {formatGender(nextStatus)}
           </Button>
         )}
-        <Button type="primary" danger onClick={handleOpenModal} icon={<CloseCircleOutlined/>} block disabled={["COMPLETED", "CANCELED"].includes(appointment.status)}>
+        <Button type="primary" danger onClick={handleOpenModal} icon={<CloseCircleOutlined/>} block disabled={["COMPLETED", "EXPIRED", "CANCELED"].includes(appointment.status)}>
           Cancel Appointment
         </Button>
       </Space>
