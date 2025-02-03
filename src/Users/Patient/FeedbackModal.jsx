@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Rating } from "@mui/material";
 import axios from "axios";
+import PropTypes from "prop-types";
 import { patientURL } from "../../Api & Services/Api";
 
 const FeedbackModal = ({ feedbackModal, closeFeedbackModal, appointmentId }) => {
@@ -10,7 +11,7 @@ const FeedbackModal = ({ feedbackModal, closeFeedbackModal, appointmentId }) => 
   });
   const [loading, setLoading] = useState(false);
 
-  const handleFetchFeedback = async () => {
+  const handleFetchFeedback = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -25,16 +26,16 @@ const FeedbackModal = ({ feedbackModal, closeFeedbackModal, appointmentId }) => 
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    if(appointmentId){
-        handleFetchFeedback();
-    }
   }, []);
 
+  useEffect(() => {
+    if(appointmentId && feedbackModal){
+        handleFetchFeedback();
+    }
+  }, [appointmentId, feedbackModal, handleFetchFeedback]);
+
   const handleSubmitFeedback = async () => {
-    if (feedback.rating == 0 || feedback.comments.trim() == '') {
+    if (feedback.rating === 0 || feedback.comments.trim() === '') {
       alert("Please provide a rating and comment.");
       return;
     }
@@ -57,7 +58,7 @@ const FeedbackModal = ({ feedbackModal, closeFeedbackModal, appointmentId }) => 
   };
 
   return (
-    <Dialog open={feedbackModal} onClose={closeFeedbackModal} onLoad={loading}>
+    <Dialog open={feedbackModal} onClose={closeFeedbackModal}>
       <DialogTitle>Submit Feedback</DialogTitle>
       <DialogContent>
         <Rating 
@@ -89,6 +90,12 @@ const FeedbackModal = ({ feedbackModal, closeFeedbackModal, appointmentId }) => 
       </DialogActions>
     </Dialog>
   );
+};
+
+FeedbackModal.propTypes = {
+  feedbackModal: PropTypes.bool.isRequired,
+  closeFeedbackModal: PropTypes.func.isRequired,
+  appointmentId: PropTypes.number.isRequired
 };
 
 export default FeedbackModal;

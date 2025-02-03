@@ -5,7 +5,7 @@ import { PaperClipOutlined, UploadOutlined, UserAddOutlined } from '@ant-design/
 import { hospitalURL } from '../../Api & Services/Api';
 import Dragger from 'antd/es/upload/Dragger';
 import Title from 'antd/es/typography/Title';
-import { formatGender, generateLabel } from '../../Api & Services/Services';
+import { generateLabel } from '../../Api & Services/Services';
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
@@ -39,7 +39,7 @@ const Doctors = () => {
       });
       setDoctors(response.data);
     } catch (error) {
-      if(error.response.status !=500){
+      if(error.response.status !== 500){
         setError(error?.response?.data?.message);
       } else{
         setError("Error while fetching doctors. Please try again!");

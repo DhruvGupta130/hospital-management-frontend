@@ -75,14 +75,13 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
       </div>
       <div className="card-details">
         <div className="card-header">
-          <h3>{appointment.title}</h3>
           <p>{appointment.date}</p>
         </div>
         <div className="card-body">
           <p><strong>Doctor:</strong> {appointment?.doctorName}</p>
           <p><strong>Time:</strong> {appointment.time}</p>
           <p><strong>Department:</strong> {appointment?.doctorDepartment}</p>
-          <p><strong>Status:</strong> 
+          <div><strong>Status:</strong>
             {appointment.status === "BOOKED" && (
               <Chip label="Booked" color="primary" icon={<HourglassEmpty />} />
             )}
@@ -98,7 +97,7 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
             {appointment.status === "EXPIRED" && (
               <Chip label="Expired" color="warning" icon={<AccessTime />} />
             )}
-          </p>
+          </div>
           <p><strong>hospital:</strong> {appointment?.hospitalName}</p>
           <p><strong>Address:</strong> {appointment.hospitalAddress}</p>
           {appointment.status === "CANCELED" && <p><strong>Cancellation Reason:</strong> {appointment?.cancellationReason}</p>}
@@ -141,6 +140,8 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
 AppointmentCard.propTypes = {
   appointment: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    date: PropTypes.string,
+    time: PropTypes.string,
     doctorName: PropTypes.string.isRequired,
     doctorDepartment: PropTypes.string.isRequired,
     doctorImage: PropTypes.string.isRequired,
@@ -150,6 +151,8 @@ AppointmentCard.propTypes = {
     status: PropTypes.string.isRequired,
     cancellationReason: PropTypes.string,
   }).isRequired,
+  refresh: PropTypes.func.isRequired,
+  setSuccess: PropTypes.func.isRequired,
 };
 
 export default AppointmentCard;
