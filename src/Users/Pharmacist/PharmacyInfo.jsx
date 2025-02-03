@@ -15,11 +15,14 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
     window.open(url, '_blank');
   };
 
-  const isBefore = ((closingTime) => {
-    const [hours, minutes, seconds] = closingTime.split(':').map(Number);
+  const isBefore = ((openingTime, closingTime) => {
+    let [hours, minutes, seconds] = closingTime.split(':').map(Number);
     const closingTimeDate = new Date();
     closingTimeDate.setHours(hours, minutes, seconds, 0);
-    return closingTimeDate > new Date();
+    [hours, minutes, seconds] = openingTime.split(':').map(Number);
+    const openingTimeDate = new Date();
+    openingTimeDate.setHours(hours, minutes, seconds, 0);
+    return closingTimeDate > new Date() && openingTime < new Date();
   })
 
   const handleToggleStatus = async () => {
@@ -125,11 +128,11 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
                           marginLeft: 5,
                           marginTop: '16px',
                           fontSize: '18px',
-                          opacity: isBefore(Pharmacy.closingTime) ? 0.5 : 1,
-                          cursor: isBefore(Pharmacy.closingTime) ? 'not-allowed' : 'pointer',
+                          opacity: isBefore(Pharmacy.openingTime, Pharmacy.closingTime) ? 0.5 : 1,
+                          cursor: isBefore(Pharmacy.openingTime, Pharmacy.closingTime) ? 'not-allowed' : 'pointer',
                           color: 'white'
                         }}
-                        disabled={isBefore(Pharmacy.closingTime)}
+                        disabled={isBefore(Pharmacy.openingTime, Pharmacy.closingTime)}
                         onClick={handleToggleStatus}
                       >
                         {Pharmacy.open ? 'Opened' : 'Closed'}

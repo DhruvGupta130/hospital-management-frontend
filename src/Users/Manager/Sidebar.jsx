@@ -66,7 +66,7 @@ const Sidebar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/hospital/notifications" className="sidebar-NavLink" onClick={handleNavLinkClick}>
+                <NavLink to="/hospital/feedbacks" className="sidebar-NavLink" onClick={handleNavLinkClick}>
                   <Feedback className="sidebar-icon" />
                   Feedback & Reviews
                 </NavLink>

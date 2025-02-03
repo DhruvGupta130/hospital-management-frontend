@@ -7,7 +7,7 @@ import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import "@mui/icons-material/DocumentScannerOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
-import { Groups2Outlined, Schedule } from "@mui/icons-material";
+import { FeedbackOutlined, Groups2Outlined, Schedule } from "@mui/icons-material";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -64,9 +64,9 @@ const Sidebar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/doctor/lab-results" className="sidebar-NavLink" onClick={handleNavLinkClick}>
-                  <LocalHospitalOutlinedIcon className="sidebar-icon" />
-                  Lab Results
+                <NavLink to="/doctor/feedbacks" className="sidebar-NavLink" onClick={handleNavLinkClick}>
+                <FeedbackOutlined className="sidebar-icon" />
+                  Feedbacks
                 </NavLink>
               </li>
               <li>

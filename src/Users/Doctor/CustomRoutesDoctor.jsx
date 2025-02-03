@@ -1,10 +1,11 @@
 import { Route, Routes } from 'react-router-dom'
 import Sidebar from './Sidebar';
-import "./Doctor.css";
 import DoctorProfile from './DoctorProfile.jsx';
 import Schedules from './Schedules.jsx';
 import AppointmentContainer from './AppointmentContainer.jsx';
 import Patients from './Patients.jsx';
+import FeedbackPage from './FeedbackPage.jsx';
+import "./Doctor.css";
 
 const CustomRoutesDoctor = () => {
   return (
@@ -15,8 +16,7 @@ const CustomRoutesDoctor = () => {
           <Route path='/appointments' element={<AppointmentContainer/>} />
           <Route path='/schedule' element={<Schedules/> } />
           <Route path='/patients' element={<Patients/>} />
-          <Route path='lab-results'  />
-          <Route path='/settings' />
+          <Route path='feedbacks' element={<FeedbackPage/>} />
       </Routes>
     </div>
   )

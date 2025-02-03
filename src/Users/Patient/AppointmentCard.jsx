@@ -7,7 +7,8 @@ import axios from "axios";
 import { useState } from "react";
 import { message } from "antd";
 import { getAvatarText } from "../../Api & Services/Services.js";
-import { CancelPresentationOutlined, CheckCircleOutline, DoneAll, ErrorOutline, HourglassEmpty } from "@mui/icons-material";
+import { CancelPresentationOutlined, CheckCircleOutline, DoneAll, ErrorOutline, FeedbackOutlined, HourglassEmpty } from "@mui/icons-material";
+import FeedbackModal from "./FeedbackModal.jsx";
 
 const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
   appointment.date = format(new Date(appointment.appointmentDate), "MMMM dd, yyyy");
@@ -19,6 +20,7 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
   });
 
   const [openModal, setOpenModal] = useState(false);
+  const [feedbackModal, setFeedbackModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleAppointmentCancellation = async () => {
@@ -47,6 +49,9 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+
+  const openFeedbackModal = () => setFeedbackModal(true);
+  const closeFeedbackModal = () => setFeedbackModal(false);
   
   const handleCancellationReasonChange = (e) => {
     setAppointmentData({
@@ -96,7 +101,8 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
           {appointment.status === "CANCELED" && <p><strong>Cancellation Reason:</strong> {appointment?.cancellationReason}</p>}
         </div>
         <div>
-          <Button color="error" variant="outlined" endIcon={<CancelPresentationOutlined/>} onClick={handleOpenModal} fullWidth sx={{mt:2}} disabled={(appointment.status === "COMPLETED" || appointment.status === "CANCELED")}>Cancel Appointment</Button>
+          {(appointment.status !== "COMPLETED") && <Button color="error" variant="outlined" endIcon={<CancelPresentationOutlined/>} onClick={handleOpenModal} fullWidth sx={{mt:2}} disabled={(appointment.status === "CANCELED")}>Cancel Appointment</Button>}
+          {(appointment.status === "COMPLETED") && <Button color="success" variant="outlined" endIcon={<FeedbackOutlined/>} onClick={openFeedbackModal} fullWidth sx={{mt:2}} >Submit Feedback</Button>}
         </div>
       </div>
       <Dialog open={openModal} onClose={handleCloseModal}>
@@ -119,6 +125,12 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
           <Button onClick={handleAppointmentCancellation} loading={loading} color="error">Confirm</Button>
         </DialogActions>
       </Dialog>
+
+      <FeedbackModal
+       feedbackModal={feedbackModal}
+       closeFeedbackModal={closeFeedbackModal}
+       appointmentId={appointment.id}
+      />
     </div>
   );
 };

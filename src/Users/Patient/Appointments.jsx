@@ -38,7 +38,6 @@ const Appointments = () => {
         },
       });
       setAppointments(response.data);
-      console.log(response.data);
     } catch (error) {
       setError("Error fetching appointments data.");
       console.error('Error fetching appointments:', error);

@@ -164,7 +164,7 @@ const Patients = () => {
 
   return (
     <div className="hospital-patients">
-      <Card title={<Title level={3}>Patients List</Title>} style={{ margin: "10px" }}>
+      <Card title={<Title level={3}>Patients List</Title>} >
         {loading ? (
           <Spin tip="Loading Patients..." size="large" style={{ display: "block", margin: "auto" }} />
         ) : error ? (

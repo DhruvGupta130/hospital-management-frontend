@@ -6,14 +6,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { IMAGE_URL } from "../Api & Services/Api.js";
-import { fetchPatientProfileData } from "../Users/Patient/fetchPatientProfileData.jsx";
 import { fetchManagerProfileData } from "../Users/Manager/fetchManagerProfileData.jsx";
+import { fetchDoctorProfileData } from "../Users/Doctor/fetchDoctorProfileData.jsx";
+import { fetchPharmacistProfileData } from "../Users/Pharmacist/fetchPharmacistProfileData.jsx";
+import { fetchPatientProfileData } from "../Users/Patient/fetchPatientProfileData.jsx";
+import { getAvatarText } from "../Api & Services/Services.js";
 
 function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
-  const [patient, setPatient] = useState({
+  const [user, setUser] = useState({
     image: "",
     fullName: "",
   });
@@ -37,9 +40,13 @@ function Navbar() {
 
   const fetchProfile = useCallback(() => {
     if (role === "ROLE_PATIENT") {
-      fetchPatientProfileData(setPatient, () => {}, () => {});
+      fetchPatientProfileData(setUser, () => {}, () => {});
     } else if (role === "ROLE_MANAGEMENT") {
-      fetchManagerProfileData(setPatient, () => {}, () => {});
+      fetchManagerProfileData(setUser, () => {}, () => {});
+    } else if (role === "ROLE_DOCTOR") {
+      fetchDoctorProfileData(setUser, () => {}, () => {});
+    } else if (role === "ROLE_PHARMACIST") {
+      fetchPharmacistProfileData(setUser, () => {}, () => {});
     }
   }, [role]);
 
@@ -48,14 +55,6 @@ function Navbar() {
       fetchProfile();
     }
   }, [fetchProfile, isLoggedIn]);
-
-  const getAvatarText = (fullName) => {
-    let names = "";
-    if(fullName) names = fullName.split(" ");
-    const firstLetter = names[0]?.charAt(0).toUpperCase();
-    const lastLetter = names[names.length - 1]?.charAt(0).toUpperCase();
-    return firstLetter + lastLetter;
-  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -128,15 +127,15 @@ function Navbar() {
         <li>
           {isLoggedIn ? (
             <Link to={profile} className="avatar-link">
-              {patient.image ? (
+              {user.image ? (
                 <img
-                  src={`${IMAGE_URL}${patient.image}`}
-                  alt={patient.fullName}
+                  src={`${IMAGE_URL}${user.image}`}
+                  alt={user.fullName}
                   className="avatar-img"
                 />
               ) : (
                 <Avatar sx={{ bgcolor: red[700], width: 50, height: 50 }}>
-                  {getAvatarText(patient.fullName)}
+                  {getAvatarText(user.fullName)}
                 </Avatar>
               )}
             </Link>
@@ -166,17 +165,17 @@ function Navbar() {
             {isLoggedIn ? (
               <Link to={profile} onClick={toggleNavbar} className="avatar-link">
                 <div className="avatar">
-                  {patient.image ? (
+                  {user.image ? (
                     <img
-                      src={`${IMAGE_URL}${patient.image}`}
-                      alt={patient.fullName}
+                      src={`${IMAGE_URL}${user.image}`}
+                      alt={user.fullName}
                       className="avatar-img"
                     />
                   ) : (
                     <Avatar
                       sx={{ bgcolor: red[700], width: 80, height: 80 }}
                     >
-                      {getAvatarText(patient.fullName)}
+                      {getAvatarText(user.fullName)}
                     </Avatar>
                   )}
                 </div>

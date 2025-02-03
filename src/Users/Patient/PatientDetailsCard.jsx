@@ -210,7 +210,7 @@ PatientDetailsCard.propTypes = {
     dateOfBirth: PropTypes.string.isRequired,
     gender: PropTypes.string.isRequired,
     mobile: PropTypes.string.isRequired,
-    alternateMobile: PropTypes.number,
+    alternateMobile: PropTypes.string,
     email: PropTypes.string.isRequired,
     aadhaarId: PropTypes.string,
     image: PropTypes.string,

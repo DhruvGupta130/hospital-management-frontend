@@ -53,7 +53,7 @@ const AppointmentContainer = () => {
 
   return (
     <div className="profile-container">
-      <Card title={<Title level={3}>Appointments</Title>} style={{ margin: "10px" }}>
+      <Card title={<Title level={3}>Appointments</Title>}>
         <Row gutter={[16, 16]}>
           {loading ? (
             <Col span={24} style={{padding: "40px 0" }}>
@@ -153,7 +153,7 @@ const Appointment = ({ appointment, refresh }) => {
       hoverable
       style={{
         width: "100%",
-        minHeight: "450px",
+        minHeight: "500px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",

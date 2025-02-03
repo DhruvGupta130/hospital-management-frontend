@@ -117,7 +117,7 @@ const DoctorProfile = () => {
 
   return (
     <div className="profile-container">
-      <Card style={{ margin: "10px" }}>
+      <Card >
         {loading ? (
           <Spin tip="Loading Doctor Data..." size="large" style={{ display: "block", margin: "auto" }} />
         ) : error ? (
