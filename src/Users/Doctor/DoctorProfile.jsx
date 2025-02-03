@@ -87,6 +87,7 @@ const DoctorProfile = () => {
       message.success("Image removed successfully.");
     } catch (err) {
       message.error("Failed to remove image. Please try again.");
+      console.log("Error in removing image: ",err);
     }
   };
 

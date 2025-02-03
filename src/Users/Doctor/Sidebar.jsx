@@ -6,7 +6,6 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import "@mui/icons-material/DocumentScannerOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { FeedbackOutlined, Groups2Outlined, Schedule } from "@mui/icons-material";
 
 const Sidebar = () => {

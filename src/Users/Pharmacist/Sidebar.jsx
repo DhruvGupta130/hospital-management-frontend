@@ -5,7 +5,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined"; // Icon for lab results
+// Icon for lab results
 import { MedicalInformationOutlined, MedicalServicesOutlined } from "@mui/icons-material";
 
 const Sidebar = () => {

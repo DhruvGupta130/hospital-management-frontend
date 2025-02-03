@@ -285,6 +285,7 @@ PharmacyInfo.propTypes = {
     services: PropTypes.string.isRequired,
     pharmacyTechnology: PropTypes.string.isRequired,
     accreditations: PropTypes.string.isRequired,
+    open: PropTypes.bool.isRequired,
     insurancePartners: PropTypes.arrayOf(string).isRequired,
     mobile: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Button, Typography, Spin, Divider, Avatar } from "antd";
+import { Card, Col, Row, Typography, Spin, Divider, Avatar } from "antd";
 import { StarFilled, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { displayImage, doctorURL } from "../../Api & Services/Api";
