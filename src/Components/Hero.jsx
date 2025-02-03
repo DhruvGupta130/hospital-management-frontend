@@ -64,8 +64,8 @@ function Hero() {
             </div>
 
             <div className="text-stats-container">
-              <p>10+</p>
-              <p>Years of Expertise</p>
+              <p>1000+</p>
+              <p>Pharmacies</p>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ import PrivateRoute from "./auth/PrivateRoute.jsx";
 import NotAuthorized from "./Pages/NotAuthorized.jsx";
 import CustomRoutesPatient from "./Users/Patient/CustomRoutesPatient.jsx";
 import "./Styles/Sidebar.css";
-import CustomRoutesPages from "./Pages/CustomRoutesPages.jsx";
+import CustomRoutesPages from "./Pages/CustomPages/CustomRoutesPages.jsx";
 
 const App = () => {
     return (
