@@ -3,7 +3,7 @@ import { Card, Col, Row, Typography, Spin, Divider, Avatar } from "antd";
 import { StarFilled, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { displayImage, hospitalURL } from "../../Api & Services/Api";
-import { StarBorder, StarOutlined } from "@mui/icons-material";
+import { StarBorder } from "@mui/icons-material";
 
 const { Text } = Typography;
 
