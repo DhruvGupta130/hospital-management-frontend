@@ -3,7 +3,7 @@ import { Card, Col, Row, Typography, Spin, Divider, Avatar } from "antd";
 import { StarFilled, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { displayImage, doctorURL } from "../../Api & Services/Api";
-import { StarOutlined } from "@mui/icons-material";
+import { StarBorder } from "@mui/icons-material";
 
 const { Text } = Typography;
 
@@ -84,7 +84,7 @@ const FeedbackPage = () => {
                       index < feedback.rating ? (
                         <StarFilled key={index} style={{ color: "#fadb14", fontSize: "18px", marginRight: "5px" }} />
                       ) : (
-                        <StarOutlined key={index} style={{ color: "#fadb14", fontSize: "18px", marginRight: "5px" }} />
+                        <StarBorder key={index} style={{ color: "#fadb14", fontSize: "18px", marginRight: "5px" }} />
                       )
                     ))}
                   </div>
