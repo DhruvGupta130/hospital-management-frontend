@@ -7,7 +7,7 @@ import axios from "axios";
 import { useState } from "react";
 import { message } from "antd";
 import { getAvatarText } from "../../Api & Services/Services.js";
-import { CancelPresentationOutlined, CheckCircleOutline, DoneAll, ErrorOutline, FeedbackOutlined, HourglassEmpty } from "@mui/icons-material";
+import { AccessTime, CancelPresentationOutlined, CheckCircleOutline, DoneAll, ErrorOutline, FeedbackOutlined, HourglassEmpty } from "@mui/icons-material";
 import FeedbackModal from "./FeedbackModal.jsx";
 
 const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
@@ -95,13 +95,16 @@ const AppointmentCard = ({ appointment, refresh, setSuccess }) => {
             {appointment.status === "CANCELED" && (
               <Chip label="Canceled" color="error" icon={<ErrorOutline />} />
             )}
+            {appointment.status === "EXPIRED" && (
+              <Chip label="Expired" color="warning" icon={<AccessTime />} />
+            )}
           </p>
           <p><strong>hospital:</strong> {appointment?.hospitalName}</p>
           <p><strong>Address:</strong> {appointment.hospitalAddress}</p>
           {appointment.status === "CANCELED" && <p><strong>Cancellation Reason:</strong> {appointment?.cancellationReason}</p>}
         </div>
         <div>
-          {(appointment.status !== "COMPLETED") && <Button color="error" variant="outlined" endIcon={<CancelPresentationOutlined/>} onClick={handleOpenModal} fullWidth sx={{mt:2}} disabled={(appointment.status === "CANCELED")}>Cancel Appointment</Button>}
+          {(appointment.status !== "COMPLETED") && <Button color="error" variant="outlined" endIcon={<CancelPresentationOutlined/>} onClick={handleOpenModal} fullWidth sx={{mt:2}} disabled={(appointment.status === "CANCELED" || appointment.status === "EXPIRED")}>Cancel Appointment</Button>}
           {(appointment.status === "COMPLETED") && <Button color="success" variant="outlined" endIcon={<FeedbackOutlined/>} onClick={openFeedbackModal} fullWidth sx={{mt:2}} >Submit Feedback</Button>}
         </div>
       </div>

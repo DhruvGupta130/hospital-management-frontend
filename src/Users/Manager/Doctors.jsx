@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Button, Table, Modal, Form, Input, message, Card, Spin, Alert } from 'antd';
+import { Button, Table, Modal, Form, Input, message, Card, Spin, Alert, Select } from 'antd';
 import { PaperClipOutlined, UploadOutlined, UserAddOutlined } from '@ant-design/icons';
 import { hospitalURL } from '../../Api & Services/Api';
 import Dragger from 'antd/es/upload/Dragger';
 import Title from 'antd/es/typography/Title';
+import { formatGender, generateLabel } from '../../Api & Services/Services';
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
@@ -19,7 +20,7 @@ const Doctors = () => {
     email: '',
     mobile: '',
     department: '',
-    specialty: '',
+    speciality: '',
     licenseNumber: '',
   });
   const [fileList, setFileList] = useState([]);
@@ -76,7 +77,7 @@ const Doctors = () => {
       email: '',
       mobile: '',
       department: '',
-      specialty: '',
+      speciality: '',
       licenseNumber: '',
     });
   };
@@ -96,7 +97,7 @@ const Doctors = () => {
       !newDoctor.firstName ||
       !newDoctor.lastName ||
       !newDoctor.department ||
-      !newDoctor.specialty ||
+      !newDoctor.speciality ||
       !newDoctor.licenseNumber ||
       !newDoctor.email ||
       !newDoctor.mobile
@@ -180,7 +181,7 @@ const Doctors = () => {
                   { title: 'Gender', dataIndex: 'gender', key: 'gender', render: (_text, record) => record.gender.charAt(0)+record.gender.substring(1).toLowerCase()},
                   { title: 'Email', dataIndex: 'email', key: 'email' },
                   { title: 'Mobile', dataIndex: 'mobile', key: 'mobile'},
-                  { title: 'Specialty', dataIndex: 'specialty', key: 'specialty' },
+                  { title: 'Speciality', dataIndex: 'speciality', key: 'speciality' },
                   { title: 'Department', dataIndex: 'department', key: 'department' },
                 ]}
                 bordered
@@ -257,18 +258,30 @@ const Doctors = () => {
       >
         <Card>
           <Form layout="vertical" style={{ gap: '16px' }}>
-            {['username', 'password', 'firstName', 'lastName', 'gender', 'email', 'mobile', 'department', 'specialty', 'licenseNumber'].map((field) => (
+            {['username', 'password', 'firstName', 'lastName', 'gender', 'email', 'mobile', 'department', 'speciality', 'licenseNumber'].map((field) => (
               <Form.Item
-                label={field.charAt(0).toUpperCase() + field.slice(1)}
+                label={generateLabel(field)}
                 key={field}
                 style={{ marginBottom: '16px' }}
               >
-                <Input
+                {field === "gender" ? 
+                  <Select 
+                    name={field} 
+                    value={newDoctor[field]} 
+                    onChange={(value) => handleInputChange({ target: { name: field, value } })}
+                  >
+                    <Select.Option value="" disabled>Select Gender</Select.Option>
+                    <Select.Option value="MALE">Male</Select.Option>
+                    <Select.Option value="FEMALE">Female</Select.Option>
+                    <Select.Option value="OTHER">Other</Select.Option>
+                  </Select>
+                  : <Input
                   name={field}
                   value={newDoctor[field]}
                   onChange={handleInputChange}
                   type={field === 'password' ? 'password' : 'text'}
                 />
+                }
               </Form.Item>
             ))}
             <Button 

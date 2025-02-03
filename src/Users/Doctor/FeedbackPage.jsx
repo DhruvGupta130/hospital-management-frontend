@@ -46,7 +46,7 @@ const FeedbackPage = () => {
           <Spin size="large" tip="Loading feedbacks..." />
         ) : (
           <Row gutter={[16, 16]}>
-            {feedbacks.map((feedback) => (
+            {feedbacks.length > 0 ? feedbacks.map((feedback) => (
               <Col xs={24} sm={12} md={8} lg={6} key={feedback.id}>
                 <Card
                   hoverable
@@ -95,7 +95,7 @@ const FeedbackPage = () => {
                   </Text>
                 </Card>
               </Col>
-            ))}
+            )): "No feedbacks available"}
           </Row>
         )}
       </Card>

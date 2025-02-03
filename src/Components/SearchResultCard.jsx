@@ -67,7 +67,7 @@ function SearchResultCard({ result, type }) {
       case "Pharmacy":
         return result.overview || "No additional details available.";
       case "Doctor":
-        return result.specialty || "No additional details available.";
+        return result.speciality || "No additional details available.";
       case "Medication":
         return result.compositionName + " " + result.strength + " " + result.dosageForm || "No additional details available.";
       default:
@@ -242,7 +242,7 @@ SearchResultCard.propTypes = {
     fullName: PropTypes.string,
     name: PropTypes.string,
     description: PropTypes.string,
-    specialty: PropTypes.string,
+    speciality: PropTypes.string,
     address: PropTypes.shape({
       street: PropTypes.string,
       city: PropTypes.string,
