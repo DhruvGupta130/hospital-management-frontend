@@ -67,7 +67,7 @@ const Pharmacy = () => {
       [name]: value,
     }));
   };
-
+  
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
     setNewPharmacy((prevState) => ({
@@ -333,7 +333,13 @@ const Pharmacy = () => {
               {field === "insurancePartners" ?  
                 <Input.TextArea
                   value={newPharmacy.insurancePartners.join(", ")}
-                  onChange={(e) => setNewPharmacy(prevState => ({ ...prevState, insurancePartners: e.target.value.split(",") }))}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setNewPharmacy((prevState) => ({
+                      ...prevState,
+                      insurancePartners: value ? value.split(",").map(item => item.trim()) : [],
+                    }));
+                  }}
                   placeholder="Enter insurancePartners separated by commas"
                   rows={4}
                 /> : 
@@ -342,7 +348,7 @@ const Pharmacy = () => {
                   value={newPharmacy[field]}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':'"}
+                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':' and ending with the '.'"}
                 />
               }
             </Form.Item>

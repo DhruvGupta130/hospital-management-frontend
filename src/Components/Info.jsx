@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import InformationCard from "./InformationCard.jsx";
+import { Box, Typography } from "@mui/material";
+import { Card, Row, Col } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHospital,
   faPrescriptionBottle,
+  faCalendarCheck,
+  faUserMd,
+  faPills,
 } from "@fortawesome/free-solid-svg-icons";
-import "../Styles/Info.css";
+import Title from "antd/es/typography/Title";
 
 const services = [
   {
@@ -19,41 +24,65 @@ const services = [
     icon: faPrescriptionBottle,
     route: "/nearby-pharmacies",
   },
+  {
+    title: "Book an Appointment",
+    description: "Schedule a visit with a doctor at a nearby hospital.",
+    icon: faCalendarCheck,
+    route: "/book-appointment",
+  },
+  {
+    title: "Consult a Doctor",
+    description: "Get instant medical consultation with expert doctors.",
+    icon: faUserMd,
+    route: "/consult-doctor",
+  },
+  {
+    title: "Order Medicines Online",
+    description: "Get your medicines delivered to your doorstep with ease.",
+    icon: faPills,
+    route: "/order-medicines",
+  },
 ];
 
 function Info() {
   const navigate = useNavigate();
 
   return (
-    <section className="info-section" id="facilities">
-      <header className="info-header">
-        <h3 className="info-title">
-          <span>Explore Nearby</span>
-        </h3>
-        <p className="info-description">
-          Easily find nearby hospitals and pharmacies tailored to meet your healthcare needs.
-          Our system helps you access trusted facilities quickly and efficiently.
-        </p>
-      </header>
+    <Box sx={{ bgcolor: "#f5f5f5", padding: 5 }}>
+      <Card
+        style={{padding: 30, background: "#f9f9f9", borderRadius: 12 }}
+        title={
+          <Title level={2} style={{textAlign: 'center', textWrap: 'wrap', fontWeight: 700}}>
+            Explore Healthcare Services
+          </Title>
+        }
+      >
+        <Typography variant="body1" align="center" color="textSecondary" gutterBottom>
+          Quickly find hospitals, pharmacies, and doctors near you. Access medical care with ease.
+        </Typography>
 
-      <div className="info-cards">
-        {services.map((service, index) => (
-          <div
-            key={index}
-            onClick={() => navigate(service.route)}
-            className="info-card-wrapper"
-            role="button"
-            aria-label={`Navigate to ${service.title}`}
-          >
-            <InformationCard
-              title={service.title}
-              description={service.description}
-              icon={service.icon}
-            />
-          </div>
-        ))}
-      </div>
-    </section>
+        <Row gutter={[24, 24]} justify="center" style={{ marginTop: 20 }}>
+          {services.map((service, index) => (
+            <Col xs={24} sm={12} md={8} key={index}>
+              <Card
+                hoverable
+                className="info-card"
+                onClick={() => navigate(service.route)}
+                style={{ textAlign: "center", padding: "16px", borderRadius: "8px", boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", height: "100%" }}
+              >
+                <FontAwesomeIcon icon={service.icon} size="3x" style={{ color: "#1890ff", marginBottom: "15px" }} />
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  {service.title}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {service.description}
+                </Typography>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Card>
+    </Box>
   );
 }
 

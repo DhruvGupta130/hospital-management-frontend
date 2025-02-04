@@ -87,8 +87,7 @@ const Hospital = () => {
         [name]: value,
       },
     }));
-  };
-
+  }; 
 
   const handleImageChange = ({ fileList }) => {
     setFileList(fileList);
@@ -347,7 +346,13 @@ const Hospital = () => {
               field === "specialities" ?  
                 <Input.TextArea
                   value={newHospital.specialities.join(", ")}
-                  onChange={(e) => setNewHospital(prevState => ({ ...prevState, specialities: e.target.value.split(",") }))}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setNewHospital((prevState) => ({
+                      ...prevState,
+                      specialities: value ? value.split(",").map(item => item.trim()) : [],
+                    }));
+                  }}
                   placeholder="Enter hospital specialities separated by commas"
                   rows={4}
                 /> :
@@ -356,7 +361,7 @@ const Hospital = () => {
                   value={newHospital[field]}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':'"}
+                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':' and ending with '."}
                 />
               }
             </Form.Item>
@@ -386,7 +391,13 @@ const Hospital = () => {
               : field === "insurancePartners" ?  
                 <Input.TextArea
                   value={newHospital.insurancePartners.join(", ")}
-                  onChange={(e) => setNewHospital(prevState => ({ ...prevState, insurancePartners: e.target.value.split(",") }))}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setNewHospital((prevState) => ({
+                      ...prevState,
+                      insurancePartners: value ? value.split(",").map(item => item.trim()) : [],
+                    }));
+                  }}
                   placeholder="Enter insurancePartners separated by commas"
                   rows={4}
                 /> :  
@@ -395,7 +406,7 @@ const Hospital = () => {
                   value={newHospital[field]}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder="Enter pointwise with heading separated by ':'"
+                  placeholder="Enter pointwise with heading separated by ':' and ending with '."
                 />
               }
             </Form.Item>

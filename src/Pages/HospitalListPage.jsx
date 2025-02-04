@@ -1,24 +1,19 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Alert,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CircularProgress,
-  Divider,
-  Grid,
-  Paper,
-  TextField,
-  Typography
-} from '@mui/material';
-import {URL} from "../Api & Services/Api.js";
-import '../Styles/HospitalListPage.css';
+import { URL } from '../Api & Services/Api.js';
+import { Input, Button, Card, Spin, Alert, Row, Col, Typography, InputNumber } from 'antd';
+import { Divider, Paper, Box } from '@mui/material';
+import { EnvironmentOutlined, SearchOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import { CardContent, CardMedia } from '@mui/material'; // Correct import for CardContent
+
+const { Search } = Input;
+const { Title, Text } = Typography;
 
 const HospitalListPage = () => {
   const [hospitals, setHospitals] = useState([]);
-  const [radius, setRadius] = useState(10); // default radius 10 km
+  const [radius, setRadius] = useState(100);
   const [userLocation, setUserLocation] = useState({ lat: null, lon: null });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -34,28 +29,15 @@ const HospitalListPage = () => {
           });
         },
         () => {
-          alert('Geolocation is not supported or enabled.');
+          setErrorMessage('Geolocation is not enabled or supported.');
         }
       );
-    } else {
-      alert('Geolocation is not supported by this browser.');
     }
   }, []);
 
-  const haversineDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in km
-    const degToRad = Math.PI / 180;
-    const φ1 = lat1 * degToRad;
-    const φ2 = lat2 * degToRad;
-    const Δφ = (lat2 - lat1) * degToRad;
-    const Δλ = (lon2 - lon1) * degToRad;
-
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  };
+  const filteredHospitals = hospitals.filter(hospital =>
+    hospital.hospitalName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const fetchHospitals = async () => {
     setErrorMessage('');
@@ -69,34 +51,14 @@ const HospitalListPage = () => {
       setLoading(true);
       try {
         const response = await axios.get(`${URL}/nearby/hospital`, {
-          params: {
-            latitude: userLocation.lat,
-            longitude: userLocation.lon,
-            radius: radius,
-          },
+          params: { latitude: userLocation.lat, longitude: userLocation.lon, radius },
         });
-
+        setHospitals(response.data);
         if (response.data.length === 0) {
-          setErrorMessage('No hospitals found in your area within the specified radius.');
+          setErrorMessage('No hospitals found within the specified radius.');
         }
-
-        const hospitalsWithDistance = response.data.map((hospital) => {
-          const distance = haversineDistance(
-            userLocation.lat,
-            userLocation.lon,
-            hospital.address.latitude,
-            hospital.address.longitude
-          );
-          return {
-            ...hospital,
-            distance: distance.toFixed(2),
-          };
-        });
-
-        setHospitals(hospitalsWithDistance);
       } catch (error) {
-        setErrorMessage('Error fetching hospitals. Please try again later.');
-        console.error('Error fetching hospitals:', error);
+        setErrorMessage('Error fetching hospitals. Try again later.');
       } finally {
         setLoading(false);
       }
@@ -105,98 +67,95 @@ const HospitalListPage = () => {
     }
   };
 
-  const filteredHospitals = hospitals.filter((hospital) =>
-    hospital.hospitalName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div className="hospital-list-container" style={{ padding: '20px', backgroundColor: '#f4f6f8' }}>
-      <Typography variant="h4" gutterBottom align="center" sx={{ fontWeight: 'bold', color: '#1976d2', mb: 3 }}>
-        Find Nearby Hospitals
-      </Typography>
-
-      <Paper elevation={3} sx={{ padding: 3, marginBottom: 3, borderRadius: '10px' }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Search for a hospital"
+      <Title level={3} style={{ textAlign: 'center', color: '#1890ff' }}>Find Nearby Hospitals</Title>
+      
+      <Paper elevation={3} style={{ padding: 20, marginBottom: 20, borderRadius: 10 }}>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12}>
+            <Search
+              placeholder="Search hospital name"
+              size="large"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              variant="outlined"
-              placeholder="e.g. XYZ Hospital"
-              sx={{ backgroundColor: 'white' }}
+              enterButton
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              type="number"
-              label="Radius (in km)"
+          </Col>
+          <Col xs={24} sm={6}>
+            <InputNumber
+              min={10}
               value={radius}
-              onChange={(e) => setRadius(e.target.value)}
-              variant="outlined"
-              min="1"
-              step="1"
-              sx={{ backgroundColor: 'white' }}
+              onChange={(value) => setRadius(value)}
+              size="large"
+              style={{ width: '100%' }}
+              addonAfter="km"
             />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={fetchHospitals}
-              sx={{
-                padding: 1,
-                fontWeight: 'bold',
-                borderRadius: '5px',
-                textTransform: 'none',
-              }}
-            >
-              Search
+          </Col>
+          <Col xs={24} sm={6}>
+            <Button type="primary" size="large" onClick={fetchHospitals} block>
+              Search <SearchOutlined />
             </Button>
-          </Grid>
-        </Grid>
+          </Col>
+        </Row>
       </Paper>
 
-      {errorMessage && <Alert severity="error" sx={{ marginBottom: 2 }}>{errorMessage}</Alert>}
+      {errorMessage && <Alert message={errorMessage} type="error" showIcon style={{ marginBottom: 20 }} />}
 
       {loading ? (
-        <CircularProgress size={40} sx={{ display: 'block', margin: 'auto' }} />
+        <Spin size="large" style={{ display: 'block', margin: 'auto' }} />
       ) : (
-        <Grid container spacing={3}>
+        <Row gutter={[16, 16]}>
           {filteredHospitals.length > 0 ? (
-            filteredHospitals.map((hospital) => (
-              <Grid item xs={12} sm={6} md={4} key={hospital.id}>
-                <Card sx={{ borderRadius: '10px', boxShadow: 3, transition: 'transform 0.3s', '&:hover': { transform: 'scale(1.05)' } }}>
-                  <CardContent>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
-                      {hospital.hospitalName}
-                    </Typography>
-                    <Typography variant="body2">{hospital.address.street}, {hospital.address.city}, {hospital.address.state}</Typography>
-                    <Typography variant="body2" sx={{ fontSize: '0.875rem', color: '#555' }}>
-                      {hospital.distance} km away
-                    </Typography>
-                    <Typography variant="body2" sx={{ marginBottom: 1 }}>{hospital.description}</Typography>
-                    <Typography variant="body2">Established: {hospital.establishedYear}</Typography>
-                  </CardContent>
-                  <Divider />
-                  <CardActions sx={{ justifyContent: 'space-between', padding: '10px' }}>
-                    <Typography variant="body2">
-                      Email: <a href={`mailto:${hospital.email}`}>{hospital.email}</a>
-                    </Typography>
-                    <Typography variant="body2">
-                      Website: <a href={`http://${hospital.website}`} target="_blank" rel="noopener noreferrer">{hospital.website}</a>
-                    </Typography>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))
+            filteredHospitals.map((hospital) => {
+              const linkTo = `/details/hospital/${hospital.hospitalName}`;
+              return (
+                <Col xs={24} sm={12} md={8} key={hospital.id}>
+                  <Card
+                    hoverable
+                    style={{
+                      width: 300,
+                      height: 'auto',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      borderRadius: 4,
+                      overflow: 'hidden',
+                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-8px)',
+                        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+                      },
+                    }}
+                  >
+                    <Link to={linkTo} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Box style={{ width: '100%', height: 200, backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {hospital.image ? (
+                          <CardMedia component="img" alt={hospital.hospitalName} image={hospital.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        ) : (
+                          <LocalHospitalIcon style={{ fontSize: '80px', color: '#888' }} />
+                        )}
+                      </Box>
+                      <CardContent style={{ padding: '16px' }}>
+                        <Title level={5} style={{ color: '#1890ff', fontWeight: 600 }}>{hospital.hospitalName}</Title>
+                        <Text>
+                          <EnvironmentOutlined /> {hospital.address.street}, {hospital.address.city}, {hospital.address.state}
+                        </Text>
+                        <Divider />
+                        <Text strong>Established:</Text> {hospital.establishedYear || 'N/A'}
+                        <br />
+                        <Text strong>Email:</Text> <a href={`mailto:${hospital.email}`}>{hospital.email}</a>
+                        <br />
+                        <Text strong>Website:</Text> <a href={`http://${hospital.website}`} target="_blank" rel="noopener noreferrer">{hospital.website}</a>
+                      </CardContent>
+                    </Link>
+                  </Card>
+                </Col>
+              );
+            })
           ) : (
-            <Typography align="center" sx={{ width: '100%' }}>No hospitals found matching your search criteria.</Typography>
+            <Text style={{ textAlign: 'center', width: '100%' }}>No hospitals found.</Text>
           )}
-        </Grid>
+        </Row>
       )}
     </div>
   );
