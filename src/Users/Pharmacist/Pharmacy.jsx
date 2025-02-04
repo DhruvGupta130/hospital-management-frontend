@@ -67,7 +67,7 @@ const Pharmacy = () => {
       [name]: value,
     }));
   };
-
+  
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
     setNewPharmacy((prevState) => ({
@@ -276,12 +276,20 @@ const Pharmacy = () => {
 
   const nextStep = () => {
     if (currentStep === 0) {
-      if (!newPharmacy.pharmacyName || !newPharmacy.mobile || !newPharmacy.email || !newPharmacy.website) {
-        message.error('Please fill in all required fields');
+      if (!newPharmacy.pharmacyName || 
+          !newPharmacy.mobile || !/^[0-9]{10}$/.test(newPharmacy.mobile) ||  // Ensure exactly 10 digits
+          !newPharmacy.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newPharmacy.email) || // Valid email format
+          !newPharmacy.website || !/^(http|https):\/\/[^ "]+$/.test(newPharmacy.website) || // Valid website format
+          !newPharmacy.openingTime || !newPharmacy.closingTime) {
+        message.error('Please fill in all required fields correctly');
         return;
       }
     } else if (currentStep === 1) {
-      if(!newPharmacy.accreditations || !newPharmacy.insurancePartners || !newPharmacy.overview || !newPharmacy.services || !newPharmacy.pharmacyTechnology) {
+      if (!newPharmacy.accreditations || 
+          !newPharmacy.insurancePartners.length || 
+          !newPharmacy.overview || 
+          !newPharmacy.services || 
+          !newPharmacy.pharmacyTechnology) {
         message.error('Please fill in all required fields');
         return;
       }
@@ -290,14 +298,25 @@ const Pharmacy = () => {
         message.error('Please select a location on the map');
         return;
       }
-    } else if(currentStep === 3) {
-      if (!newPharmacy.address.street || !newPharmacy.address.city || !newPharmacy.address.state || !newPharmacy.address.zip || !newPharmacy.address.country) {
-        message.error('Please complete the address details');
+    } else if (currentStep === 3) {
+      if (!newPharmacy.address.street || 
+          !newPharmacy.address.city || 
+          !newPharmacy.address.state || 
+          !newPharmacy.address.zip || !/^[0-9]{5,6}$/.test(newPharmacy.address.zip) ||  // Ensure valid zip code
+          !newPharmacy.address.country) {
+        message.error('Please complete the address details correctly');
+        return;
+      }
+    } else if (currentStep === 4) {
+      if (newPharmacy.images.length === 0) {
+        message.error('Please upload at least one image');
         return;
       }
     }
+  
     setCurrentStep(currentStep + 1);
-  };  
+  };
+  
   const prevStep = () => setCurrentStep(currentStep - 1);
 
   const steps = [
@@ -314,7 +333,7 @@ const Pharmacy = () => {
                 name={field}
                 value={newPharmacy[field]}
                 onChange={handleInputChange}
-                type={field === 'email' ? 'email' : field === 'openingTime' || field === 'closingTime' ? 'time' : 'text'}
+                type={field === 'mobile'? 'number' : field === 'email' ? 'email' : field === 'openingTime' || field === 'closingTime' ? 'time' : 'text'}
               />
             </Form.Item>
           ))}
@@ -333,7 +352,13 @@ const Pharmacy = () => {
               {field === "insurancePartners" ?  
                 <Input.TextArea
                   value={newPharmacy.insurancePartners.join(", ")}
-                  onChange={(e) => setNewPharmacy(prevState => ({ ...prevState, insurancePartners: e.target.value.split(",") }))}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setNewPharmacy((prevState) => ({
+                      ...prevState,
+                      insurancePartners: value ? value.split(",").map(item => item.trim()) : [],
+                    }));
+                  }}
                   placeholder="Enter insurancePartners separated by commas"
                   rows={4}
                 /> : 
@@ -342,7 +367,7 @@ const Pharmacy = () => {
                   value={newPharmacy[field]}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':'"}
+                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':' and ending with the '.'"}
                 />
               }
             </Form.Item>

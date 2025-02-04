@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { Home, LocationOn, MyLocation } from '@mui/icons-material';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import {GOOGLE_API_KEY, patientURL} from "../../Api & Services/Api.js";
@@ -268,8 +268,8 @@ const PatientAddressCard = ({ patient, refreshProfileData }) => {
       {/* Address Update Modal */}
       <Dialog open={isEditing} onClose={handleClose} className='form'>
         <DialogTitle sx={{textAlign:'center', fontSize:'x-large'}}>{!showForm ?`Choose Location`: `Enter Address`}</DialogTitle>
-        {error && <div className='error-message'>{error}</div>}
-        {success && <div className='success-message'>{success}</div>}
+        {error && <Alert severity='error' className='error-message' sx={{marginX: 2}}>{error}</Alert>}
+        {success && <Alert severity='success' className='success-message' sx={{marginX: 2}}>{success}</Alert>}
         <DialogContent>
           {!showForm && <div className='map-container'>
             {isLoaded ? (

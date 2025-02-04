@@ -5,6 +5,8 @@ import Schedules from './Schedules.jsx';
 import AppointmentContainer from './AppointmentContainer.jsx';
 import Patients from './Patients.jsx';
 import FeedbackPage from './FeedbackPage.jsx';
+import Notifications from '../../Pages/Notifications.jsx';
+import ProfileSettings from '../Manager/ProfileSettings.jsx';
 import "./Doctor.css";
 
 const CustomRoutesDoctor = () => {
@@ -17,6 +19,8 @@ const CustomRoutesDoctor = () => {
           <Route path='/schedule' element={<Schedules/> } />
           <Route path='/patients' element={<Patients/>} />
           <Route path='feedbacks' element={<FeedbackPage/>} />
+          <Route path='/notifications' element={<Notifications/>} />
+          <Route path='/settings' element={<ProfileSettings/>} />
       </Routes>
     </div>
   )

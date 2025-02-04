@@ -21,6 +21,11 @@
 }
 
 
+.highlight-row {
+  background-color: #ffcccc !important; 
+}
+
+
 @media (max-width: 1024px) {
 
   .Pharmacy-details, .Medications-details{

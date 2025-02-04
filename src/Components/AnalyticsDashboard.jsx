@@ -1,3 +1,5 @@
+import React, { useRef, useEffect, useState } from "react";
+import { Bar, Pie, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,200 +12,346 @@ import {
   LineElement,
   PointElement,
 } from "chart.js";
-import { Bar, Pie, Line } from "react-chartjs-2";
-import "../Styles/Dashboard.css";
-import Footer from "./Footer.jsx";
 
 ChartJS.register(
-  CategoryScale,
+  CategoryScale, 
   LinearScale,
   BarElement,
+  ArcElement,    
   Title,
   Tooltip,
   Legend,
-  ArcElement,
   LineElement,
   PointElement
 );
 
-const AnalyticsDashboard = () => {
-  const statistics = {
-    "Total Patients": 1200,
-    "Active Doctors": 45,
-    "Appointments Today": 85,
-    "Pharmacies Nearby": 15,
-  };
+import { Card, Row, Col, Statistic, Divider, Spin, Typography } from "antd";
+import {
+  UserOutlined,
+  SolutionOutlined,
+  CalendarOutlined,
+  MedicineBoxOutlined,
+} from "@ant-design/icons";
+import axios from "axios";
+import { URL } from "../Api & Services/Api";
+import "../Styles/Dashboard.css";
+import { Alert, CircularProgress } from "@mui/material";
 
-  const appointmentAnalysis = {
-    Jan: 200,
-    Feb: 180,
-    Mar: 220,
-    Apr: 210,
-    May: 230,
-    Jun: 250,
-    Jul: 260,
-    Aug: 240,
-    Sep: 220,
-    Oct: 230,
-    Nov: 200,
-    Dec: 190,
-  };
+// 📊 Dynamic Chart Wrapper
+const DynamicChart = ({ ChartComponent, data }) => {
+  const chartContainer = useRef(null);
+  const [width, setWidth] = useState(400);
 
-  const demographics = {
-    Male: 600,
-    Female: 500,
-    Others: 100,
-  };
-
-  const trends = {
-    "Week 1": 80,
-    "Week 2": 120,
-    "Week 3": 100,
-    "Week 4": 150,
-  };
-
-  const departments = {
-    Cardiology: 50,
-    Pediatrics: 30,
-    Orthopedics: 40,
-    Dermatology: 25,
-    Neurology: 20,
-  };
-
-  const performanceMetrics = {
-    "Average Wait Time (min)": 15,
-    "Satisfaction Rating (%)": 85,
-    "Daily Revenue (INR)": 50000,
-  };
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(() => {
+      if (chartContainer.current) {
+        setWidth(chartContainer.current.offsetWidth);
+      }
+    });
+    resizeObserver.observe(chartContainer.current);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   return (
-    <div className="container">
-      <h3 className="info-title">
-        <span>Analytics Dashboard</span>
-      </h3>
+    <div ref={chartContainer} className="chart-container">
+      <ChartComponent data={data} options={{ responsive: true, maintainAspectRatio: false, width }} />
+    </div>
+  );
+};
 
-      {/* General Statistics */}
-      <section className="card">
-        <h2>General Statistics</h2>
-        <div className="stats-grid">
-          {Object.entries(statistics).map(([key, value]) => (
-            <div className="stat-card" key={key}>
-              <h3>{key}</h3>
-              <p>{value}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+// 📊 Analytics Dashboard Component
+const AnalyticsDashboard = () => {
+  const [statistics, setStatistics] = useState({});
+  const [patientGrowth, setPatientGrowth] = useState({});
+  const [averageDurationByDoctor, setAverageDurationByDoctor] = useState({});
+  const [appointmentAnalysis, setAppointmentAnalysis] = useState({});
+  const [demographics, setDemographics] = useState({});
+  const [trends, setTrends] = useState({});
+  const [departmentStats, setDepartmentStats] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-      {/* Performance Metrics */}
-      <section className="card">
-        <h2>Performance Metrics</h2>
-        <div className="stats-grid">
-          {Object.entries(performanceMetrics).map(([key, value]) => (
-            <div className="stat-card" key={key}>
-              <h3>{key}</h3>
-              <p>{value}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+  // Fetch Data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, perfRes, apptRes, demoRes, trendRes, departRes] = await Promise.all([
+          axios.get(`${URL}/statistics`),
+          axios.get(`${URL}/performance`),
+          axios.get(`${URL}/appointments/analysis`),
+          axios.get(`${URL}/demographics`),
+          axios.get(`${URL}/trends`),
+          axios.get(`${URL}/stats/departments`),
+        ]);
 
-      {/* Graphs Section */}
-      <section className="card">
-        <h2>Graphs</h2>
-        <div className="charts-grid">
-          <div className="chart-card">
-            <h3>Appointments</h3>
-            <div className="chart-container">
-              <Bar
+        setStatistics(statsRes.data);
+        setPatientGrowth(perfRes.data.patientGrowth || {});
+        setAverageDurationByDoctor(perfRes.data.averageDurationByDoctor || {});
+        setAppointmentAnalysis(apptRes.data);
+        setDemographics(demoRes.data);
+        setTrends(trendRes.data);
+        setDepartmentStats(departRes.data);
+        console.log(trendRes.data);
+      } catch (error) {
+        setError("Error fetching analytics data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <p style={{textAlign: 'center', margin: 50}}><CircularProgress/></p>;
+  if (error) return (<Alert sx={{ display: "flex", justifyContent: "center", fontSize: "medium" }} severity="error">
+      {error}
+    </Alert>)
+
+  const patientGrowthData = {
+    labels: Object.keys(patientGrowth),
+    datasets: [
+      {
+        label: "New Patients",
+        data: Object.values(patientGrowth),
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+      },
+    ],
+  };
+
+  const consultationDurationData = {
+    labels: Object.keys(averageDurationByDoctor),
+    datasets: [
+      {
+        label: "Avg Consultation Duration (mins)",
+        data: Object.values(averageDurationByDoctor),
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+      },
+    ],
+  };
+
+  
+  const departmentChartData = {
+    labels: Object.keys(appointmentAnalysis.departmentCounts || {}),
+    datasets: [
+      {
+        label: "Appointments per Department",
+        data: Object.values(appointmentAnalysis.departmentCounts || {}),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+      },
+    ],
+  };
+
+  const doctorDepartmentData = {
+    labels: Object.keys(demographics.doctorDepartmentDistribution || {}),
+    datasets: [
+      {
+        label: "Doctors per Department",
+        data: Object.values(demographics.doctorDepartmentDistribution || {}),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+      },
+    ],
+  };
+
+  const patientAgeGroupData = {
+    labels: Object.keys(demographics.patientAgeGroupDistribution || {}),
+    datasets: [
+      {
+        label: "Patients Age Group",
+        data: Object.values(demographics.patientAgeGroupDistribution || {}),
+        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
+      },
+    ],
+  };
+
+  const patientGenderData = {
+    labels: Object.keys(demographics.patientGenderDistribution || {}),
+    datasets: [
+      {
+        label: "Patient Gender",
+        data: Object.values(demographics.patientGenderDistribution || {}),
+        backgroundColor: ["#FF6384", "#36A2EB"],
+      },
+    ],
+  };  
+  
+  const formatMonthlyAppointments = () => {
+    if (!trends?.monthlyAppointments) return { labels: [], datasets: [] };
+  
+    return {
+      labels: Object.keys(trends.monthlyAppointments),
+      datasets: [
+        {
+          label: "Appointments per Month",
+          data: Object.values(trends.monthlyAppointments),
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+        },
+      ],
+    };
+  };
+  
+  const monthlyAppointmentsData = formatMonthlyAppointments();
+  
+
+  const formatWeeklyTrendsData = () => {
+    if (!trends?.weeklyTrends) return { labels: [], datasets: [] };
+  
+    const daysOfWeek = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+    const statusTypes = new Set();
+  
+    Object.values(trends.weeklyTrends).forEach((statuses) => {
+      Object.keys(statuses).forEach((status) => statusTypes.add(status));
+    });
+  
+    const datasets = [...statusTypes].map((status) => ({
+      label: status,
+      data: daysOfWeek.map((day) => trends.weeklyTrends[day]?.[status] || 0),
+      backgroundColor: status === "APPROVED" ? "#4caf50" : status === "PENDING" ? "#ff9800" : "#f44336",
+    }));
+  
+    return { labels: daysOfWeek, datasets };
+  };
+  
+  const weeklyTrendsData = formatWeeklyTrendsData();
+
+  const departmentStatsData = {
+    labels: Object.keys(departmentStats || {}),
+    datasets: [
+      {
+        label: "Total Doctors per Department",
+        data: Object.values(departmentStats || {}),
+        backgroundColor: ["#4CAF50", "#FF9800", "#2196F3", "#9C27B0"],
+        borderColor: "#fff",
+        borderWidth: 1,
+      },
+    ],
+  };
+  
+
+  return (
+    <div className="dashboard-container">
+      <Card title={
+        <h3 className="dashboard-title" style={{textWrap: 'wrap', fontWeight: 600}}>📊 Analytics Dashboard</h3>
+      }>
+
+        {/* General Statistics */}
+        <Row gutter={[24, 24]}>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Today's Appointments" value={statistics.todayAppointments} prefix={<CalendarOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Total Appointments" value={statistics.totalAppointments} prefix={<MedicineBoxOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Total Doctors" value={statistics.totalDoctors} prefix={<SolutionOutlined />} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic title="Total Patients" value={statistics.totalPatients} prefix={<UserOutlined />} />
+            </Card>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        <Row gutter={[24, 24]}>
+          {/* Patient Growth Bar Chart */}
+          <Col xs={24} md={12}>
+            <Card title="📈 Patient Growth (Monthly)">
+              <DynamicChart ChartComponent={Bar} data={patientGrowthData} />
+            </Card>
+          </Col>
+
+          {/* Consultation Duration Pie Chart */}
+          <Col xs={24} md={12}>
+            <Card title="⏳ Avg Consultation Duration by Doctor">
+              <DynamicChart ChartComponent={Pie} data={consultationDurationData} />
+            </Card>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        {/* Charts Section */}
+        <h3 className="section-title">📈 Data Insights</h3>
+        <Row gutter={[24, 24]}>
+
+          <Col xs={24} md={12}>
+            <Card title="Department-wise Appointments">
+              <DynamicChart ChartComponent={Bar} data={departmentChartData} />
+            </Card>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Card title="Appointments Trend">
+              <DynamicChart
+                ChartComponent={Bar}
                 data={{
-                  labels: Object.keys(appointmentAnalysis),
-                  datasets: [
-                    {
-                      label: "Appointments",
-                      data: Object.values(appointmentAnalysis),
-                      backgroundColor: "rgba(75, 192, 192, 0.6)",
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: { legend: { display: false } },
+                  labels: Object.keys(appointmentAnalysis.statusCounts || {}),
+                  datasets: [{ label: "Appointments", data: Object.values(appointmentAnalysis.statusCounts || {}), backgroundColor: "rgba(255, 99, 132, 0.6)" }],
                 }}
               />
-            </div>
-          </div>
+            </Card>
+          </Col>
 
-          <div className="chart-card demographics-box">
-            <h3>Demographics</h3>
-            <div className="chart-container">
-              <Pie
-                data={{
-                  labels: Object.keys(demographics),
-                  datasets: [
-                    {
-                      label: "Demographics",
-                      data: Object.values(demographics),
-                      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-                    },
-                  ],
-                }}
+          <Col xs={24} md={12}>
+            <Card title="👨‍⚕️ Doctor Department Distribution">
+              <DynamicChart ChartComponent={Bar} data={doctorDepartmentData} />
+            </Card>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Card title="📈 Patient Age Group">
+              <DynamicChart ChartComponent={Pie} data={patientAgeGroupData} />
+            </Card>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Card title="🚻 Patient Gender">
+              <DynamicChart ChartComponent={Pie} data={patientGenderData} />
+            </Card>
+          </Col>
+
+          <Col xs={24} md={12}>
+            <Card title="📅 Monthly Appointments">
+              <DynamicChart
+                ChartComponent={Bar}
+                data={monthlyAppointmentsData}
                 options={{
                   responsive: true,
-                  maintainAspectRatio: true,
-                  aspectRatio: 2,
+                  maintainAspectRatio: false,
+                  scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
                 }}
               />
-            </div>
-          </div>
+            </Card>
+          </Col>
 
-          <div className="chart-card">
-            <h3>Trends</h3>
-            <div className="chart-container">
-              <Line
-                data={{
-                  labels: Object.keys(trends),
-                  datasets: [
-                    {
-                      label: "Trends",
-                      data: Object.values(trends),
-                      borderColor: "rgba(153, 102, 255, 1)",
-                      backgroundColor: "rgba(153, 102, 255, 0.2)",
-                    },
-                  ],
-                }}
+          <Col xs={24} md={12}>
+            <Card title="📊 Weekly Trends (Status-wise)">
+              <DynamicChart
+                ChartComponent={Bar}
+                data={weeklyTrendsData}
                 options={{
                   responsive: true,
-                  plugins: { legend: { display: false } },
+                  maintainAspectRatio: false,
+                  scales: { x: { stacked: true }, y: { stacked: true } },
                 }}
               />
-            </div>
-          </div>
+            </Card>
+          </Col>
 
-          <div className="chart-card">
-            <h3>Departments</h3>
-            <div className="chart-container">
-              <Bar
-                data={{
-                  labels: Object.keys(departments),
-                  datasets: [
-                    {
-                      label: "Departments",
-                      data: Object.values(departments),
-                      backgroundColor: "rgba(255, 159, 64, 0.6)",
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  plugins: { legend: { display: false } },
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-      <Footer/>
+          <Col xs={24} md={12}>
+            <Card title="🏥 Doctors Per Department">
+              <DynamicChart ChartComponent={Bar} data={departmentStatsData} />
+            </Card>
+          </Col>
+
+        </Row>
+      </Card>
     </div>
   );
 };

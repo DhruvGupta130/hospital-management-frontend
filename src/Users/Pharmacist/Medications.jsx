@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Button, Table, Modal, Form, Input, message, Card, Spin, Alert } from 'antd';
-import { PaperClipOutlined, UploadOutlined, UserAddOutlined } from '@ant-design/icons';
+import { PaperClipOutlined, UploadOutlined } from '@ant-design/icons';
 import { pharmacyURL } from '../../Api & Services/Api';
 import Dragger from 'antd/es/upload/Dragger';
 import Title from 'antd/es/typography/Title';
+import { MedicationSharp } from '@mui/icons-material';
 
 const Medications = () => {
   const [Medications, setMedications] = useState([]);
@@ -25,11 +26,11 @@ const Medications = () => {
   const [loading, setLoading] = useState(false);
   const [load, setLoad] = useState(false);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token');
 
   const fetchMedications = useCallback(async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.get(`${pharmacyURL}/medications`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -46,7 +47,7 @@ const Medications = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchMedications();
@@ -104,6 +105,7 @@ const Medications = () => {
       return;
     }
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post(`${pharmacyURL}/medications/add`, newMedications, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -111,6 +113,16 @@ const Medications = () => {
       });
       message.success(response.data?.message);
       setIsRegisterModalVisible(false);
+      setNewMedications({medicationName: '',
+        compositionName: '',
+        dosageForm: '',
+        strength: '',
+        quantity: '',
+        expiry: '',
+        manufacturer: '',
+        price: '',
+        batchNumber: '',
+      });
       await fetchMedications();
     } catch (error) {
       message.error(error?.response?.data?.message || 'An error occurred, please try again');
@@ -132,6 +144,7 @@ const Medications = () => {
     formData.append('file', fileList[0]?.originFileObj);
 
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post(`${pharmacyURL}/medications/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -180,46 +193,79 @@ const Medications = () => {
             ) : error ? (
               <Alert message={error} type="error" showIcon/>
             ) : (
-                <Table
-                dataSource={Medications}
-                rowKey="id"
-                columns={[
-                    {
-                        title: "",
-                        dataIndex: "isExpired",
-                        key: "status",
-                        render: (isExpired) => {
-                          return isExpired ? (
-                            <div
-                              style={{
-                                height: "10px",
-                                width: "10px",
-                                backgroundColor: "red",
-                                borderRadius: "50%",
-                                margin: "auto",
-                              }}
-                            />
-                          ) : null;
-                        },
-                    },
-                    { title: "Medication Name", dataIndex: "medicationName", key: "medicationName" },
-                    { title: "Composition Name", dataIndex: "compositionName", key: "compositionName" },
-                    { title: "Strength", dataIndex: "strength", key: "strength" },
-                    { title: "Quantity", dataIndex: "quantity", key: "quantity" },
-                    { title: "Expiry", dataIndex: "expiry", key: "expiry" },
-                    { title: "Manufacturer", dataIndex: "manufacturer", key: "manufacturer" },
-                    { title: "Batch Number", dataIndex: "batchNumber", key: "batchNumber" },
-                ]}
-                bordered
-                className="Medications-table"
-                scroll={{ x: "max-content" }}
-                style={{ marginBottom: "16px" }}
-              />
-              
-            )}
+              <Table
+              dataSource={Medications}
+              rowKey="id"
+              rowClassName={(record) => (record.quantity === 0 ? 'highlight-row' : '')}
+              columns={[
+                {
+                  title: '',
+                  dataIndex: 'isExpired',
+                  key: 'status',
+                  render: (isExpired) => {
+                    return isExpired ? (
+                      <div
+                        style={{
+                          height: '10px',
+                          width: '10px',
+                          backgroundColor: 'red',
+                          borderRadius: '50%',
+                          margin: 'auto',
+                        }}
+                      />
+                    ) : null;
+                  },
+                },
+                {
+                  title: 'Medication Name',
+                  dataIndex: 'medicationName',
+                  key: 'medicationName',
+                },
+                {
+                  title: 'Price',
+                  dataIndex: 'price',
+                  key: 'price',
+                  render: (price) => `₹${price}`,
+                },
+                {
+                  title: 'Composition Name',
+                  dataIndex: 'compositionName',
+                  key: 'compositionName',
+                },
+                {
+                  title: 'Strength',
+                  dataIndex: 'strength',
+                  key: 'strength',
+                },
+                {
+                  title: 'Quantity',
+                  dataIndex: 'quantity',
+                  key: 'quantity',
+                },
+                {
+                  title: 'Expiry',
+                  dataIndex: 'expiry',
+                  key: 'expiry',
+                },
+                {
+                  title: 'Manufacturer',
+                  dataIndex: 'manufacturer',
+                  key: 'manufacturer',
+                },
+                {
+                  title: 'Batch Number',
+                  dataIndex: 'batchNumber',
+                  key: 'batchNumber',
+                },
+              ]}
+              bordered
+              className="Medications-table"
+              scroll={{ x: 'max-content' }}
+              style={{ marginBottom: '16px' }}
+            />)}            
             {!loading && !error && (
               <div className='button-box'>
-                <Button type="primary" icon={<UserAddOutlined />} onClick={handleRegisterModalOpen} className="register-button" style={{ width: '100%' }}>
+                <Button type="primary" icon={<MedicationSharp/>} onClick={handleRegisterModalOpen} className="register-button" style={{ width: '100%' }}>
                   Add New Medication
                 </Button>
                 <Button type="primary" icon={<UploadOutlined />} onClick={handleBulkUploadModalOpen} className="register-button" style={{ width: '100%' }}>
@@ -319,7 +365,7 @@ const Medications = () => {
             ))}
             <Button
               type="primary"
-              icon={<UserAddOutlined />}
+              icon={<MedicationSharp/>}
               onClick={handleRegisterMedications}
               className="register-button"
               style={{ width: "100%" }}

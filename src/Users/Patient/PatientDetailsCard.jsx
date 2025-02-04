@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Button, Modal, Box, TextField, Typography } from '@mui/material';
+import { Avatar, Button, Modal, Box, TextField, Typography, Alert } from '@mui/material';
 import { red } from '@mui/material/colors';
 import axios from 'axios';
 import { displayImage, patientURL } from "../../Api & Services/Api.js";
@@ -144,8 +144,8 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, borderRadius: '8px', width: '500px', maxWidth: '90%', padding: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: '600', marginBottom: 2, textAlign:'center' }}>Edit Profile</Typography>
 
-          {success && <div className='success-message'>{success}</div>}
-          {error && <div className='error-message'>{error}</div>}
+          {success && <Alert severity='error' className='success-message'>{success}</Alert>}
+          {error && <Alert severity='success' className='error-message'>{error}</Alert>}
           {imagePreview && (
             <Box sx={{ marginBottom: 2, textAlign: 'center' }}>
               <img src={imagePreview} alt="Preview" style={{ width: '60%', maxHeight: '40vh', borderRadius: '8px', marginTop: '10px', border: '5px solid #2a3f54' }} />

@@ -94,6 +94,7 @@ function Login() {
 
         <div className="auth-footer">
           <p>Don&apos;t have an account? <Link to="/Register">Register</Link></p>
+          <p><Link to="/forgot-password">Forgot Password or Password?</Link></p>
         </div>
       </div>
     </div>

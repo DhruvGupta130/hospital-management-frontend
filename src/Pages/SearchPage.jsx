@@ -3,7 +3,7 @@ import axios from "axios";
 import { URL } from "../Api & Services/Api.js";
 import { useLocation } from "react-router-dom";
 import { Container, Typography, Divider, CircularProgress, Box } from "@mui/material";
-import SearchResultCard from "./SearchResultCard.jsx";
+import SearchResultCard from "../Components/SearchResultCard.jsx";
 import "../Styles/SearchPage.css";
 
 function SearchPage() {
@@ -58,8 +58,8 @@ function SearchPage() {
                 Hospitals
               </h2>
               <Box className="card-container">
-                {searchResults.hospitals.map((hospital, index) => (
-                  <SearchResultCard key={index} result={hospital} type="Hospital" />
+                {searchResults.hospitals.map((hospital) => (
+                  <SearchResultCard key={hospital.id} result={hospital} type="Hospital" />
                 ))}
               </Box>
               <Divider className="section-divider" />
@@ -72,8 +72,8 @@ function SearchPage() {
                 Pharmacies
               </h2>
               <Box className="card-container">
-                {searchResults.pharmacies.map((pharmacy, index) => (
-                  <SearchResultCard key={index} result={pharmacy} type="Pharmacy" />
+                {searchResults.pharmacies.map((pharmacy) => (
+                  <SearchResultCard key={pharmacy.id} result={pharmacy} type="Pharmacy" />
                 ))}
               </Box>
               <Divider className="section-divider" />
@@ -86,8 +86,8 @@ function SearchPage() {
                 Doctors
               </h2>
               <Box className="card-container">
-                {searchResults.doctors.map((doctor, index) => (
-                  <SearchResultCard key={index} result={doctor} type="Doctor" />
+                {searchResults.doctors.map((doctor) => (
+                  <SearchResultCard key={doctor.id} result={doctor} type="Doctor" />
                 ))}
               </Box>
               <Divider className="section-divider" />
@@ -100,8 +100,8 @@ function SearchPage() {
                 Medications
               </h2>
               <Box className="card-container">
-                {searchResults.medications.map((medication, index) => (
-                  <SearchResultCard key={index} result={medication} type="Medication" />
+                {searchResults.medications.map((medication) => (
+                  <SearchResultCard key={medication.id} result={medication} type="Medication" />
                 ))}
               </Box>
               <Divider className="section-divider" />

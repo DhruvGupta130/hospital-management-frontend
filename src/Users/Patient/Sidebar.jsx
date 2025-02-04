@@ -9,7 +9,7 @@ import DocumentScannerOutlinedIcon from "@mui/icons-material/DocumentScannerOutl
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
-import { ReceiptLongOutlined } from "@mui/icons-material";
+import { MedicationLiquidOutlined, ReceiptLongOutlined } from "@mui/icons-material";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -68,9 +68,9 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/patient/billing" className="sidebar-NavLink" onClick={handleNavLinkClick}>
-                <PaymentOutlinedIcon className="sidebar-icon" />
-                Billing
+              <NavLink to="/patient/medications" className="sidebar-NavLink" onClick={handleNavLinkClick}>
+                <MedicationLiquidOutlined className="sidebar-icon" />
+                Medications
               </NavLink>
             </li>
             <li>

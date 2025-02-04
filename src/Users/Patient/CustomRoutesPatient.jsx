@@ -6,6 +6,8 @@ import Appointments from './Appointments.jsx';
 import LabTest from './LabTest.jsx';
 import PatientProfile from './PatientProfile.jsx';
 import ProfileSettings from './ProfileSettings.jsx';
+import Medications from './Medications.jsx';
+import Notifications from '../../Pages/Notifications.jsx';
 import './Patient.css';
 
 const CustomRoutesPatient = () => {
@@ -17,7 +19,9 @@ const CustomRoutesPatient = () => {
           <Route path='/appointments' element={<Appointments />} />
           <Route path='/documents' element={<PatientDocument/>} />
           <Route path='/records' element={<MedicalRecords/>} />
-          <Route path='lab-results' element={<LabTest/>} />
+          <Route path='/medications' element={<Medications/>} />
+          <Route path='/lab-results' element={<LabTest/>} />
+          <Route path='/notifications' element={<Notifications/>} />
           <Route path='/settings' element={<ProfileSettings/>} />
       </Routes>
     </div>

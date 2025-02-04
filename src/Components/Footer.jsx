@@ -1,61 +1,128 @@
-import "../Styles/Footer.css";
 import { Link } from "react-router-dom";
+import { Typography, Box, Container, Grid } from "@mui/material";
+import { Card } from "antd";
+import { FacebookFilled, TwitterSquareFilled, LinkedinFilled, MailFilled, PhoneFilled, GlobalOutlined } from "@ant-design/icons";
 
 function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <h2 className="footer-logo">AyuMed</h2>
-            <p className="footer-tagline">
+    <Card style={{ backgroundColor: "#001529", color: "#fff", borderRadius: 0, boxShadow: "none", padding: "40px 0" }}>
+      <Container maxWidth="lg">
+        <Grid container spacing={4} justifyContent="space-between">
+          
+          {/* Branding & Tagline */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Typography variant="h4" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
+              AyuMed
+            </Typography>
+            <Typography variant="body1" color="gray" style={{ fontFamily: "Poppins, sans-serif" }}>
               Empowering your healthcare journey with precision and care.
-            </p>
-          </div>
+            </Typography>
+          </Grid>
 
-          <div className="footer-links">
-            <div className="footer-links-column">
-              <h3>Company</h3>
-              <ul>
-                <li><Link to="/about">About Us</Link></li>
-                <li><Link to="/services">Our Services</Link></li>
-                <li><Link to="/careers">Careers</Link></li>
-                <li><Link to="/contact">Contact Us</Link></li>
-              </ul>
-            </div>
-            <div className="footer-links-column">
-              <h3>Support</h3>
-              <ul>
-                <li><Link to="/help">Help Center</Link></li>
-                <li><Link to="/faq">FAQ</Link></li>
-                <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-                <li><Link to="/terms">Terms & Conditions</Link></li>
-              </ul>
-            </div>
-            <div className="footer-links-column">
-              <h3>Contact</h3>
-              <ul>
-                <li><a href="mailto:support@ayumed.com">support@ayumed.com</a></li>
-                <li><a href="tel:+02254545252">+022 5454 5252</a></li>
-                <li><a href="https://www.ayumed.com">www.ayumed.com</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+          {/* Quick Links */}
+          <Grid item xs={12} sm={6} md={2}>
+            <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
+              Quick Links
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {["About Us", "Our Services", "Careers", "Contact Us"].map((link, index) => (
+                <Link
+                  key={index}
+                  to={`/${link.toLowerCase().replace(" ", "-")}`}
+                  style={{ textDecoration: "none", color: "#d9d9d9", transition: "color 0.3s" }}
+                  onMouseOver={(e) => (e.target.style.color = "#40a9ff")}
+                  onMouseOut={(e) => (e.target.style.color = "#d9d9d9")}
+                >
+                  {link}
+                </Link>
+              ))}
+            </Box>
+          </Grid>
 
-        <div className="footer-social">
-          <ul className="social-icons">
-            <li><a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">Facebook</a></li>
-            <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">Twitter</a></li>
-            <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a></li>
-          </ul>
-        </div>
+          {/* Support */}
+          <Grid item xs={12} sm={6} md={2}>
+            <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
+              Support
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {["Help Center", "FAQ", "Privacy Policy", "Terms & Conditions"].map((link, index) => (
+                <Link
+                  key={index}
+                  to={`/${link.toLowerCase().replace(/ /g, "-")}`}
+                  style={{ textDecoration: "none", color: "#d9d9d9", transition: "color 0.3s" }}
+                  onMouseOver={(e) => (e.target.style.color = "#40a9ff")}
+                  onMouseOut={(e) => (e.target.style.color = "#d9d9d9")}
+                >
+                  {link}
+                </Link>
+              ))}
+            </Box>
+          </Grid>
 
-        <div className="footer-bottom">
-          <p>© 2024 AyuMed. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+          {/* Contact Info */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
+              Contact
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography variant="body1" color="gray">
+                <MailFilled style={{ color: "#40a9ff" }} />{" "}
+                <a href="mailto:support@ayumed.com" style={{ textDecoration: "none", color: "#d9d9d9" }}>
+                  support@ayumed.com
+                </a>
+              </Typography>
+              <Typography variant="body1" color="gray">
+                <PhoneFilled style={{ color: "#40a9ff" }} />{" "}
+                <a href="tel:+02254545252" style={{ textDecoration: "none", color: "#d9d9d9" }}>
+                  +022 5454 5252
+                </a>
+              </Typography>
+              <Typography variant="body1" color="gray">
+                <GlobalOutlined style={{ color: "#40a9ff" }} />{" "}
+                <a href="https://www.ayumed.com" style={{ textDecoration: "none", color: "#d9d9d9" }}>
+                  www.ayumed.com
+                </a>
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+
+        {/* Social Media */}
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
+            Follow Us
+          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 3 }}>
+            {[
+              { icon: <FacebookFilled />, link: "https://facebook.com", color: "#1877F2" },
+              { icon: <TwitterSquareFilled />, link: "https://twitter.com", color: "#1DA1F2" },
+              { icon: <LinkedinFilled />, link: "https://linkedin.com", color: "#0077B5" },
+            ].map((social, index) => (
+              <a key={index} href={social.link} target="_blank" rel="noopener noreferrer">
+                <span
+                  style={{
+                    fontSize: "35px",
+                    color: social.color,
+                    transition: "transform 0.3s ease",
+                  }}
+                  onMouseOver={(e) => (e.target.style.transform = "scale(1.1)")}
+                  onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
+                >
+                  {social.icon}
+                </span>
+              </a>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Footer Bottom */}
+        <Box sx={{ mt: 4, textAlign: "center", py: 2, borderTop: "1px solid #404040" }}>
+          <Typography variant="body1" color="gray" style={{ fontFamily: "Poppins, sans-serif" }}>
+            © 2024 AyuMed. All rights reserved.
+          </Typography>
+        </Box>
+      </Container>
+    </Card>
   );
 }
 

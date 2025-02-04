@@ -7,11 +7,12 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import PersonIcon from "@mui/icons-material/Person";
 import { LocalPharmacy } from "@mui/icons-material";
 import { displayImage } from "../Api & Services/Api.js";
+import { convertTo12HourFormat } from "../Api & Services/Services.js";
 
 const getFormattedDetails = (value) => (value ? value : "N/A");
 
 function SearchResultCard({ result, type }) {
-  const linkTo = `/details/${type.toLowerCase()}/${result.hospitalName  || result.pharmacyName || result.fullName || result.medicationName}`;
+  const linkTo = `/profile/${type.toLowerCase()}/${result.id}`;
   
   const images = (() => {
     switch (type) {
@@ -90,8 +91,8 @@ function SearchResultCard({ result, type }) {
         Mobile: getFormattedDetails(result.mobile),
         Email: getFormattedDetails(result.email),
         Website: getFormattedDetails(result.website),
-        OpeningTime: getFormattedDetails(result.openingTime),
-        ClosingTime: getFormattedDetails(result.closingTime),
+        OpeningTime: getFormattedDetails(convertTo12HourFormat(result.openingTime)),  
+        ClosingTime: getFormattedDetails(convertTo12HourFormat(result.closingTime)),
       };
     } else if (type === "Doctor") {
       return {
@@ -248,7 +249,7 @@ SearchResultCard.propTypes = {
       city: PropTypes.string,
       state: PropTypes.string,
     }),
-    establishedYear: PropTypes.string,
+    establishedYear: PropTypes.number,
     mobile: PropTypes.string,
     email: PropTypes.string,
     website: PropTypes.string,
@@ -259,7 +260,7 @@ SearchResultCard.propTypes = {
     price: PropTypes.number,
     details: PropTypes.string,
   }).isRequired,
-  type: PropTypes.array.isRequired
+  type: PropTypes.string.isRequired
 };
 
 export default SearchResultCard;

@@ -5,6 +5,7 @@ import Hospital from './Hospital.jsx';
 import ManagerProfile from './ManagerProfile.jsx';
 import Patients from './Patients.jsx';
 import FeedbackPage from './FeedbackPage.jsx';
+import ProfileSettings from './ProfileSettings.jsx';
 import "./Hospital.css";
 
 
@@ -18,6 +19,7 @@ const CustomRoutesManager = () => {
           <Route path='/doctors' element={<Doctors />} />
           <Route path='/patients' element={<Patients />} />
           <Route path='/feedbacks' element={<FeedbackPage/>} />
+          <Route path='/settings' element={<ProfileSettings/>} />
       </Routes>
     </div>
   )

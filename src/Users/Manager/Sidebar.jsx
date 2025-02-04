@@ -60,12 +60,6 @@ const Sidebar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/hospital/billing" className="sidebar-NavLink" onClick={handleNavLinkClick}>
-                  <PaymentOutlinedIcon className="sidebar-icon" />
-                  Billing
-                </NavLink>
-              </li>
-              <li>
                 <NavLink to="/hospital/feedbacks" className="sidebar-NavLink" onClick={handleNavLinkClick}>
                   <Feedback className="sidebar-icon" />
                   Feedback & Reviews

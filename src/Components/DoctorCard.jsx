@@ -1,32 +1,36 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import PropTypes from "prop-types"; // Import PropTypes
+import React from "react";
+import { Card, Typography, Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { displayImage } from "../Api & Services/Api";
 
-function DoctorCard(props) {
-    return (
-        <div className="dt-card">
-            <img src={props.img} alt={props.name} className="dt-card-img" />
-            <p className="dt-card-name">{props.name}</p>
-            <p className="dt-card-title">{props.title}</p>
-            <p className="dt-card-stars">
-                <FontAwesomeIcon
-                    icon={faStar}
-                    style={{ color: "#F7BB50", paddingRight: "6px" }}
-                />
-                {props.stars}
-                <span className="dt-card-reviews"> ({props.reviews}+ Reviews)</span>
-            </p>
-        </div>
-    );
-}
+const { Title, Text } = Typography;
 
-// Define PropTypes for the component
-DoctorCard.propTypes = {
-    img: PropTypes.string.isRequired, // Image URL is required
-    name: PropTypes.string.isRequired, // Doctor's name is required
-    title: PropTypes.string.isRequired, // Doctor's title is required
-    stars: PropTypes.number.isRequired, // Number of stars is required
-    reviews: PropTypes.number.isRequired, // Number of reviews is required
+const DoctorCard = ({ doctor, onSelect, selected }) => {
+  return (
+    <Card
+      hoverable
+      onClick={onSelect}
+      style={{
+        width: 320,
+        textAlign: "center",
+        borderRadius: 10,
+        backgroundColor: selected === doctor ? "#89CFF0" : "#f0f2f5",
+        cursor: "pointer",
+        transition: "0.3s",
+      }}
+    >
+      <Avatar
+        size={100}
+        src={displayImage(doctor.image) || null} 
+        icon={!doctor.image && <UserOutlined />}
+        style={{ backgroundColor: "#d9d9d9" }}
+      />
+      <Title level={5} style={{ marginTop: 10 }}>
+        Dr. {doctor.fullName}
+      </Title>
+      <Text type="secondary">{doctor.speciality}</Text>
+    </Card>
+  );
 };
 
 export default DoctorCard;

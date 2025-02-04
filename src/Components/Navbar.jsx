@@ -197,11 +197,6 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <Link to="/about" onClick={toggleNavbar}>
-              About us
-            </Link>
-          </li>
-          <li>
             <Link to="/contact" onClick={toggleNavbar}>
               Contact us
             </Link>

@@ -87,8 +87,7 @@ const Hospital = () => {
         [name]: value,
       },
     }));
-  };
-
+  }; 
 
   const handleImageChange = ({ fileList }) => {
     setFileList(fileList);
@@ -163,7 +162,8 @@ const Hospital = () => {
     if (newHospital.images.length === 0 || newHospital.images === null) {
       message.error("Please Upload images");
       return;
-    }    
+    }
+    
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(`${hospitalURL}/register`, newHospital, {
@@ -288,15 +288,48 @@ const Hospital = () => {
 
   const validateStep = () => {
     const stepValidation = [
-      () => newHospital.hospitalName && newHospital.mobile && newHospital.email && newHospital.website && newHospital.establishedYear,
-      () => newHospital.overview && newHospital.specialities && newHospital.emergencyServices && newHospital.emergencyServices && newHospital.technology,
-      () => newHospital.bedCapacity && newHospital.icuCapacity && newHospital.operationTheaters && newHospital.accreditations && newHospital.insurancePartners,
-      () => newHospital.address.latitude && newHospital.address.longitude,
-      () => newHospital.address.street && newHospital.address.city && newHospital.address.state && newHospital.address.zip && newHospital.address.country,
+      // Step 1: Basic Details Validation
+      () => newHospital.hospitalName &&
+            newHospital.mobile &&
+            /^[0-9]{10}$/.test(newHospital.mobile) &&  // Ensure exactly 10 digits
+            newHospital.email &&
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newHospital.email) &&  // Valid email format
+            newHospital.website &&
+            /^(http|https):\/\/[^ "]+$/.test(newHospital.website) && // Valid website format
+            newHospital.establishedYear &&
+            /^[0-9]{4}$/.test(newHospital.establishedYear),  // Ensure it's a valid year
+  
+      // Step 2: Description Validation
+      () => newHospital.overview &&
+            newHospital.specialities.length > 0 && // Ensure at least one speciality
+            typeof newHospital.emergencyServices === "boolean" && // Ensure it's a boolean
+            newHospital.technology,
+  
+      // Step 3: More Details Validation
+      () => newHospital.bedCapacity &&
+            newHospital.icuCapacity &&
+            newHospital.operationTheaters &&
+            newHospital.accreditations &&
+            newHospital.insurancePartners.length > 0,  // Ensure at least one insurance partner
+  
+      // Step 4: Location Validation
+      () => newHospital.address.latitude &&
+            newHospital.address.longitude,
+  
+      // Step 5: Address Validation
+      () => newHospital.address.street &&
+            newHospital.address.city &&
+            newHospital.address.state &&
+            newHospital.address.zip &&
+            /^[0-9]{5,6}$/.test(newHospital.address.zip) && // Ensure zip is a valid number
+            newHospital.address.country,
+  
+      // Step 6: Image Upload Validation
+      () => newHospital.images.length > 0, // Ensure at least one image is uploaded
     ];
   
     return stepValidation[currentStep]();
-  };
+  };  
   
   const nextStep = () => {
     if (!validateStep()) {
@@ -319,7 +352,7 @@ const Hospital = () => {
                 name={field}
                 value={newHospital[field]}
                 onChange={handleInputChange}
-                type={field === 'email' ? 'email' : 'text'}
+                type={field === 'mobile' || field === 'establishedYear' ? 'number' : field === 'email' ? 'email' : 'text'}
               />
             </Form.Item>
           ))}
@@ -347,7 +380,13 @@ const Hospital = () => {
               field === "specialities" ?  
                 <Input.TextArea
                   value={newHospital.specialities.join(", ")}
-                  onChange={(e) => setNewHospital(prevState => ({ ...prevState, specialities: e.target.value.split(",") }))}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setNewHospital((prevState) => ({
+                      ...prevState,
+                      specialities: value ? value.split(",").map(item => item.trim()) : [],
+                    }));
+                  }}
                   placeholder="Enter hospital specialities separated by commas"
                   rows={4}
                 /> :
@@ -356,7 +395,7 @@ const Hospital = () => {
                   value={newHospital[field]}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':'"}
+                  placeholder={field === "overview" ? "Enter in paragraph" : "Enter pointwise with heading separated by ':' and ending with '."}
                 />
               }
             </Form.Item>
@@ -386,7 +425,13 @@ const Hospital = () => {
               : field === "insurancePartners" ?  
                 <Input.TextArea
                   value={newHospital.insurancePartners.join(", ")}
-                  onChange={(e) => setNewHospital(prevState => ({ ...prevState, insurancePartners: e.target.value.split(",") }))}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    setNewHospital((prevState) => ({
+                      ...prevState,
+                      insurancePartners: value ? value.split(",").map(item => item.trim()) : [],
+                    }));
+                  }}
                   placeholder="Enter insurancePartners separated by commas"
                   rows={4}
                 /> :  
@@ -395,7 +440,7 @@ const Hospital = () => {
                   value={newHospital[field]}
                   onChange={handleInputChange}
                   rows={4}
-                  placeholder="Enter pointwise with heading separated by ':'"
+                  placeholder="Enter pointwise with heading separated by ':' and ending with '."
                 />
               }
             </Form.Item>

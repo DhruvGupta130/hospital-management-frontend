@@ -1,78 +1,64 @@
-/* General Page Styles */
 .services-page {
-    padding: 40px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: "Roboto", sans-serif;
-  }
-  
-  /* Header Styles */
-  .services-header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  
-  .services-header h1 {
-    font-size: 2.5rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .services-header p {
-    font-size: 1.2rem;
-    color: #666;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  
-  /* Grid Styles */
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-  }
-  
-  /* Card Styling */
-  .information-card {
-    background: #fff;
-    border: 1px solid #e6e6e6;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .information-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  }
-  
-  .information-card .icon {
-    font-size: 2.5rem;
-    color: #007bff;
-    margin-bottom: 15px;
-  }
-  
-  .information-card h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .information-card p {
-    font-size: 1rem;
-    color: #666;
-  }
-  
-  /* Responsive Design */
-  @media screen and (max-width: 768px) {
-    .services-header h1 {
-      font-size: 2rem;
-    }
-  
-    .services-header p {
-      font-size: 1rem;
-    }
-  }
-  
+  margin: 10px;
+  padding: 40px;
+  background-color: #f8f9fa;
+}
+
+.services-header {
+  text-align: center;
+  margin: 0 auto;
+  padding-bottom: 30px;
+}
+
+.services-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+}
+
+.services-subtitle {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.services-grid {
+  margin: 0 auto;
+}
+
+.service-card {
+  text-align: center;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  background: #fff;
+  padding: 20px;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.service-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}

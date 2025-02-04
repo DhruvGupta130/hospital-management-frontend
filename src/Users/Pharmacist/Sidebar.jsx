@@ -6,7 +6,7 @@ import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 // Icon for lab results
-import { MedicalInformationOutlined, MedicalServicesOutlined } from "@mui/icons-material";
+import { GroupsOutlined, MedicalInformationOutlined, MedicalServicesOutlined } from "@mui/icons-material";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -59,9 +59,9 @@ const Sidebar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/pharmacy/billing" className="sidebar-NavLink" onClick={handleNavLinkClick}>
-                  <PaymentOutlinedIcon className="sidebar-icon" />
-                  Billing
+                <NavLink to="/pharmacy/patients" className="sidebar-NavLink" onClick={handleNavLinkClick}>
+                  <GroupsOutlined className="sidebar-icon"/>
+                  Orders
                 </NavLink>
               </li>
               <li>

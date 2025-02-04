@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { URL } from "../Api & Services/Api.js";
 import axios from 'axios';
@@ -23,6 +23,10 @@ function Register() {
     dateOfBirth: "",
   });
   const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,54 +36,83 @@ function Register() {
     }));
   };
 
+  const handleOtpChange = (e) => {
+    setOtp(e.target.value);
+  };
+
+  const validatePasswords = () => {
+    const { password, confirmPassword } = formData;
+    if (!password) return "Password fields cannot be empty!";
+    if (password.length < 8)
+      return "Password must be at least 8 characters long!";
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password))
+      return "Password must include uppercase, lowercase, number & special character!";
+    if (password !== confirmPassword) return "Passwords do not match!";
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth' 
-    });
-    if (formData.password !== formData.confirmPassword) {
-      message.error("Passwords do not match!");
+
+    const validationError = validatePasswords();
+    if (validationError) {
+      message.error(validationError);
       return;
     }
-    if(formData.password.length<8){
-      message.error("Password must be minimum 8 characters!");
-      return;
-    }
+
     if(formData.mobile.length!==10){
       message.error("Invalid Mobile Number!");
       return;
     }
-    
-    const userData = {
-      username: formData.username,
-      password: formData.password,
-      role: formData.role,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      gender: formData.gender,
-      email: formData.email,
-      mobile: formData.mobile,
-      dateOfBirth: formData.dateOfBirth,
-    };
 
     setLoading(true);
 
     try {
-      const response = await axios.post(`${URL}/register`, userData);
-      message.success(response.data?.message);
-      navigate("/login");
+      const otpResponse = await axios.post(`${URL}/otp/send`, { email: formData.email });
+      message.success(otpResponse.data?.message);
+      setOtpSent(true);
+      setResendTimer(30);
     } catch (error) {
-      if (error.response?.data?.error) {
-        message.error(error.response.data.error);
-      } else {
-        message.error("An error occurred. Please try again.");
-      }
-      console.error(error);
+        message.error(error?.response?.data?.message || "Error sending OTP");
+        console.error(error);
     } finally {
       setLoading(false);
     }
-  }
+  };
+
+  useEffect(() => {
+      if (resendTimer > 0) {
+          const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+          return () => clearTimeout(timer);
+      }
+  }, [resendTimer]);
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setVerificationLoading(true);
+    try {
+      const userData = {
+        username: formData.username,
+        password: formData.password,
+        role: formData.role,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        gender: formData.gender,
+        email: formData.email,
+        mobile: formData.mobile,
+        dateOfBirth: formData.dateOfBirth,
+        otp: otp
+      };
+      await axios.post(`${URL}/register`, userData);
+      message.success("User registered successfully");
+      navigate("/login");
+    } catch (error) {
+      message.error(error?.response?.data?.message || "Error verifying OTP");
+      console.error(error);
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
 
   return (
     <div className="auth-container">
@@ -91,7 +124,7 @@ function Register() {
           <Box display="flex" justifyContent="center" alignItems="center" height="100px">
             <CircularProgress size={40} color="primary" />
           </Box>
-        ) : (
+        ) : !otpSent ? (
           <form onSubmit={handleSubmit}>
             {/* Role Selector */}
             <div className="input-field">
@@ -134,6 +167,7 @@ function Register() {
                 onChange={handleChange}
                 required
               />
+              <small>Must be 8+ characters, include uppercase, lowercase, number & special character.</small>
             </div>
 
             {/* Confirm Password Field */}
@@ -234,8 +268,34 @@ function Register() {
             )}
 
             {/* Submit Button */}
-            <button type="submit" className="auth-btn">Register</button>
-          </form>)}
+            <button type="submit" className="auth-btn">Send OTP</button>
+          </form>) : (
+            <form onSubmit={handleVerifyOtp}>
+              <div className="input-field">
+                <label htmlFor="otp">Enter OTP</label>
+                <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    value={otp}
+                    onChange={handleOtpChange}
+                    required
+                />
+                {/* Resend OTP Small Highlighted Text */}
+                <p className="resend-otp-text" onClick={resendTimer === 0 ? handleSubmit : null} style={{ 
+                    color: resendTimer === 0 ? "#007bff" : "#6c757d", 
+                    cursor: resendTimer === 0 ? "pointer" : "default",
+                    fontSize: "12px",
+                    marginTop: "5px"
+                }}>
+                    {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+                </p>
+              </div>
+              <button type="submit" className="auth-btn" disabled={verificationLoading}>
+                {verificationLoading ? "Verifying..." : "Verify OTP"}
+              </button>
+            </form>
+        )}
 
         <div className="auth-footer">
           <p>Already have an account? <Link to="/Login">Login</Link></p>

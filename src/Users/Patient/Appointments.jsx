@@ -4,6 +4,7 @@ import { patientURL } from "../../Api & Services/Api.js";
 import AppointmentCard from "./AppointmentCard.jsx";
 import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/material";
 import { CalendarMonthOutlined, CheckCircleOutline } from "@mui/icons-material";
+import { convertTo12HourFormat } from "../../Api & Services/Services.js";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -117,8 +118,8 @@ const Appointments = () => {
     if (!slot || !slot.startTime || !slot.endTime) {
       return 'Invalid time slot';
     }
-    const startTimeFormatted = new Date(`1970-01-01T${slot.startTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const endTimeFormatted = new Date(`1970-01-01T${slot.endTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const startTimeFormatted = convertTo12HourFormat(slot.startTime);
+    const endTimeFormatted = convertTo12HourFormat(slot.endTime);
     const availability = slot.available ? 'Available' : 'Not Available';
     return `${startTimeFormatted} - ${endTimeFormatted} (${availability})`;
   };

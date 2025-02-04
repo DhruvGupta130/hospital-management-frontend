@@ -44,7 +44,7 @@ const FeedbackPage = () => {
       >
         {loading ? (
           <Spin size="large" tip="Loading feedbacks..." />
-        ) : (
+        ) : feedbacks.length > 0 ? (
           <Row gutter={[16, 16]}>
             {feedbacks.map((feedback) => (
               <Col xs={24} sm={12} md={8} lg={6} key={feedback.id}>
@@ -59,21 +59,20 @@ const FeedbackPage = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Avatar
-                        size={100}
-                        src={displayImage(feedback.patient.image)}
-                        icon={<UserOutlined />}
-                        style={{
-                          border: "2px solid #fadb14",
-                          backgroundColor: "#f0f0f0",
-                        }}
-                      />
-                    </div>
-                  {/* Patient's Name */}
-                  <div style={{textAlign: 'center', margin: 0}}>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Avatar
+                      size={100}
+                      src={displayImage(feedback.patient.image)}
+                      icon={<UserOutlined />}
+                      style={{
+                        border: "2px solid #fadb14",
+                        backgroundColor: "#f0f0f0",
+                      }}
+                    />
+                  </div>
+                  <div style={{ textAlign: 'center', margin: 0 }}>
                     <Text strong style={{ fontSize: "16px", color: "#333" }}>
-                        {feedback.patient ? feedback.patient.fullName : "Anonymous"}
+                      {feedback.patient ? feedback.patient.fullName : "Anonymous"}
                     </Text>
                     <Divider style={{ margin: "10px 0" }} />
                   </div>
@@ -107,6 +106,8 @@ const FeedbackPage = () => {
               </Col>
             ))}
           </Row>
+        ) : (
+          <Text style={{ fontSize: "16px", color: "#555" }}>No feedbacks available.</Text>
         )}
       </Card>
     </div>

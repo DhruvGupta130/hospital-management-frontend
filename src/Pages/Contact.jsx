@@ -1,86 +1,87 @@
 import { useState } from "react";
+import { Input, Button, Form, Card, Typography, message, Row, Col } from "antd";
+import { MailOutlined, UserOutlined, MessageOutlined } from "@ant-design/icons";
 import "../Styles/Contact.css";
 
-function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+const { Title, Paragraph } = Typography;
 
+const Contact = () => {
+  const [form] = Form.useForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Assuming the form submission logic is here
+  const handleSubmit = (values) => {
+    console.log("Form Data:", values);
     setIsSubmitted(true);
+    message.success("Message sent successfully!");
   };
 
   return (
     <div className="contact-container">
-      <div className="contact-header">
-        <h1>Contact Us</h1>
-        <p>We&#39;d love to hear from you! Please fill out the form below to get in touch with us. </p>
-        <p>Alternatively, you can drop a mail to &#34;support@Ayumed.com&#34;</p>
-      </div>
-      <div className="contact-form-container">
-        {isSubmitted ? (
-          <div className="success-message">
-            <h2>Thank you for your message!</h2>
-            <p>We will get back to you as soon as possible.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="contact-form">
-            <div className="form-group">
-              <label htmlFor="name">Full Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Enter your full name"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Enter your email address"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="message">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                placeholder="Write your message here"
-                rows="5"
-              />
-            </div>
-            <button type="submit" className="submit-btn">Submit</button>
-          </form>
-        )}
-      </div>
+      {isSubmitted && <Confetti />}
+      
+      <Row justify="center">
+        <Col xs={24} sm={18} md={12} lg={10}>
+          <Card className="contact-card" bordered={false}>
+            <Title level={2} className="contact-title">📩 Contact Us</Title>
+            <Paragraph type="secondary" className="contact-description">
+              We'd love to hear from you! Fill out the form below or email us at{" "}
+              <a href="mailto:support@Ayumed.com">support@Ayumed.com</a>.
+            </Paragraph>
+
+            {isSubmitted ? (
+              <div className="success-message">
+                <Title level={3} className="success-title">🎉 Thank you for reaching out!</Title>
+                <Paragraph>We will get back to you as soon as possible.</Paragraph>
+                <Button type="primary" size="large" onClick={() => setIsSubmitted(false)}>Send Another Message</Button>
+              </div>
+            ) : (
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleSubmit}
+                className="contact-form"
+              >
+                <Form.Item
+                  label="Full Name"
+                  name="name"
+                  rules={[{ required: true, message: "Please enter your full name" }]}
+                >
+                  <Input prefix={<UserOutlined />} placeholder="Enter your full name" />
+                </Form.Item>
+
+                <Form.Item
+                  label="Email Address"
+                  name="email"
+                  rules={[
+                    { required: true, message: "Please enter your email" },
+                    { type: "email", message: "Please enter a valid email" },
+                  ]}
+                >
+                  <Input prefix={<MailOutlined />} placeholder="Enter your email address" />
+                </Form.Item>
+
+                <Form.Item
+                  label="Message"
+                  name="message"
+                  rules={[{ required: true, message: "Please enter your message" }]}
+                >
+                  <Input.TextArea
+                    prefix={<MessageOutlined />}
+                    placeholder="Write your message here"
+                    rows={5}
+                  />
+                </Form.Item>
+
+                <Button type="primary" htmlType="submit" block size="large">
+                  Submit
+                </Button>
+              </Form>
+            )}
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
-}
+};
 
 export default Contact;
