@@ -231,6 +231,7 @@ SearchResultCard.propTypes = {
     images: PropTypes.array,
     hospitalName: PropTypes.string,
     pharmacyName: PropTypes.string,
+    overview: PropTypes.string,
     medicationName: PropTypes.string,
     compositionName: PropTypes.string,
     strength: PropTypes.string,

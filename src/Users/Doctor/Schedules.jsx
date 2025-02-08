@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import {
   Table,
   Checkbox,
@@ -28,7 +28,7 @@ const Schedules = () => {
   const [selectedSchedules, setSelectedSchedules] = useState([]);
   const [sortColumn, setSortColumn] = useState('date'); 
   const [sortDirection, setSortDirection] = useState('asc');
-  const fetchSchedules = async () => {
+  const fetchSchedules = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -44,11 +44,11 @@ const Schedules = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sortColumn, sortDirection]);
 
   useEffect(() => {
     fetchSchedules();
-  }, [sortColumn, sortDirection]); // Fetch schedules whenever sort options change
+  }, [fetchSchedules, sortColumn, sortDirection]); // Fetch schedules whenever sort options change
 
   useEffect(() => {
     setSelectedSchedules(schedules.filter((schedule) => schedule.checked));
@@ -125,7 +125,7 @@ const Schedules = () => {
       });
       message.success(response.data.message);
       setSelectedSchedules([]);
-      fetchSchedules();
+      await fetchSchedules();
     } catch (error) {
       message.error(error?.response?.data?.message || "Unable to clear schedules");
       console.error(error);
@@ -135,7 +135,7 @@ const Schedules = () => {
   };
 
   const handleSortChange = (columnKey, direction) => {
-    if(direction == 'descend') direction = "desc";
+    if(direction === 'descend') direction = "desc";
     else direction = "asc";
     console.log(columnKey, direction);
     setSortColumn(columnKey);

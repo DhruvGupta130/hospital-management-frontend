@@ -1,6 +1,8 @@
-import React from "react";
-import { Card, Typography, Tooltip } from "antd";
+import "react";
+import { Card, Typography } from "antd";
 import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp } from "@mui/icons-material";
+import {SolutionOutlined} from "@ant-design/icons";
+import PropTypes from "prop-types";
 
 const { Title } = Typography;
 
@@ -52,6 +54,12 @@ const DepartmentCard = ({ name, onSelect, selected }) => {
       </Title>
     </Card>
   );
+};
+
+DepartmentCard.propTypes = {
+    name: PropTypes.string.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    selected: PropTypes.string,
 };
 
 export default DepartmentCard;

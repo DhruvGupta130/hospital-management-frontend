@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import { Bar, Pie, Line } from "react-chartjs-2";
+import  { useRef, useEffect, useState } from "react";
+import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,7 +25,7 @@ ChartJS.register(
   PointElement
 );
 
-import { Card, Row, Col, Statistic, Divider, Spin, Typography } from "antd";
+import { Card, Row, Col, Statistic, Divider } from "antd";
 import {
   UserOutlined,
   SolutionOutlined,
@@ -36,6 +36,7 @@ import axios from "axios";
 import { URL } from "../Api & Services/Api";
 import "../Styles/Dashboard.css";
 import { Alert, CircularProgress } from "@mui/material";
+import PropTypes from "prop-types";
 
 // 📊 Dynamic Chart Wrapper
 const DynamicChart = ({ ChartComponent, data }) => {
@@ -93,7 +94,8 @@ const AnalyticsDashboard = () => {
         setDepartmentStats(departRes.data);
         console.log(trendRes.data);
       } catch (error) {
-        setError("Error fetching analytics data.");
+        console.error(error);
+        setError(error.response.data.message || "Error fetching analytics data.");
       } finally {
         setLoading(false);
       }
@@ -354,6 +356,47 @@ const AnalyticsDashboard = () => {
       </Card>
     </div>
   );
+};
+
+DynamicChart.propTypes = {
+  ChartComponent: PropTypes.elementType.isRequired,
+  data: PropTypes.shape({
+    labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+    datasets: PropTypes.arrayOf(
+        PropTypes.shape({
+          label: PropTypes.string,
+          data: PropTypes.arrayOf(PropTypes.number).isRequired,
+          backgroundColor: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+        })
+    ).isRequired,
+  }).isRequired,
+};
+
+AnalyticsDashboard.propTypes = {
+  statistics: PropTypes.shape({
+    todayAppointments: PropTypes.number,
+    totalAppointments: PropTypes.number,
+    totalDoctors: PropTypes.number,
+    totalPatients: PropTypes.number,
+  }),
+  patientGrowth: PropTypes.object,
+  averageDurationByDoctor: PropTypes.object,
+  appointmentAnalysis: PropTypes.shape({
+    departmentCounts: PropTypes.object,
+    statusCounts: PropTypes.object,
+  }),
+  demographics: PropTypes.shape({
+    doctorDepartmentDistribution: PropTypes.object,
+    patientAgeGroupDistribution: PropTypes.object,
+    patientGenderDistribution: PropTypes.object,
+  }),
+  trends: PropTypes.shape({
+    monthlyAppointments: PropTypes.object,
+    weeklyTrends: PropTypes.object,
+  }),
+  departmentStats: PropTypes.object,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
 };
 
 export default AnalyticsDashboard;

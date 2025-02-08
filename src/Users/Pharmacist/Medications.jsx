@@ -38,7 +38,7 @@ const Medications = () => {
       });
       setMedications(response.data);
     } catch (error) {
-      if(error.response.status !=500){
+      if(error.response.status !==500){
         setError(error?.response?.data?.message);
       } else{
         setError("Error while fetching Medications. Please try again!");
@@ -90,30 +90,89 @@ const Medications = () => {
   };
 
   const handleRegisterMedications = async () => {
+    // Trim inputs to prevent accidental spaces
+    const trimmedMedications = {
+      ...newMedications,
+      medicationName: newMedications.medicationName.trim(),
+      compositionName: newMedications.compositionName.trim(),
+      dosageForm: newMedications.dosageForm.trim(),
+      manufacturer: newMedications.manufacturer.trim(),
+      batchNumber: newMedications.batchNumber.trim(),
+    };
+
+    // Validation checks
     if (
-      !newMedications.medicationName ||
-      !newMedications.compositionName ||
-      !newMedications.dosageForm ||
-      !newMedications.strength ||
-      !newMedications.quantity ||
-      !newMedications.expiry ||
-      !newMedications.manufacturer ||
-      !newMedications.price ||
-      !newMedications.batchNumber
+        !trimmedMedications.medicationName ||
+        !trimmedMedications.compositionName ||
+        !trimmedMedications.dosageForm ||
+        !trimmedMedications.strength ||
+        !trimmedMedications.quantity ||
+        !trimmedMedications.expiry ||
+        !trimmedMedications.manufacturer ||
+        !trimmedMedications.price ||
+        !trimmedMedications.batchNumber
     ) {
       message.error('Please fill in all the required fields.');
       return;
     }
+
+    // Regex Patterns for validation
+    const numberPattern = /^[0-9]+(\.[0-9]+)?$/; // Allows integers and decimals
+    const batchPattern = /^[A-Z0-9]{5,15}$/; // Alphanumeric batch number (5-15 chars)
+    const namePattern = /^[a-zA-Z\s]+$/; // Allows only letters and spaces
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
+
+    // Field-specific validation
+    if (!namePattern.test(trimmedMedications.medicationName)) {
+      message.error("Medication name should contain only letters and spaces.");
+      return;
+    }
+
+    if (!namePattern.test(trimmedMedications.manufacturer)) {
+      message.error("Manufacturer name should contain only letters and spaces.");
+      return;
+    }
+
+    if (!numberPattern.test(trimmedMedications.quantity) || parseInt(trimmedMedications.quantity) <= 0) {
+      message.error("Quantity must be a positive number.");
+      return;
+    }
+
+    if (!numberPattern.test(trimmedMedications.price) || parseFloat(trimmedMedications.price) <= 0) {
+      message.error("Price must be a positive number.");
+      return;
+    }
+
+    if (!batchPattern.test(trimmedMedications.batchNumber)) {
+      message.error("Batch number should be 5-15 characters long and contain only uppercase letters and numbers.");
+      return;
+    }
+
+    if (!datePattern.test(trimmedMedications.expiry)) {
+      message.error("Invalid expiry date format. Use YYYY-MM-DD.");
+      return;
+    }
+
+    // Ensure expiry date is in the future
+    const expiryDate = new Date(trimmedMedications.expiry);
+    const today = new Date();
+    if (expiryDate <= today) {
+      message.error("Expiry date must be in the future.");
+      return;
+    }
+
+    setLoad(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${pharmacyURL}/medications/add`, newMedications, {
+      const response = await axios.post(`${pharmacyURL}/medications/add`, trimmedMedications, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       message.success(response.data?.message);
       setIsRegisterModalVisible(false);
-      setNewMedications({medicationName: '',
+      setNewMedications({
+        medicationName: '',
         compositionName: '',
         dosageForm: '',
         strength: '',
@@ -127,6 +186,8 @@ const Medications = () => {
     } catch (error) {
       message.error(error?.response?.data?.message || 'An error occurred, please try again');
       console.error("Error in adding Medications: ", error);
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -139,7 +200,7 @@ const Medications = () => {
       message.error('Please select a file to upload');
       return;
     }
-
+    setLoad(true);
     const formData = new FormData();
     formData.append('file', fileList[0]?.originFileObj);
 
@@ -157,6 +218,8 @@ const Medications = () => {
     } catch (error) {
       message.error(error?.response?.data?.message || 'An error occurred, please try again');
       console.error("Error in fetching Medications: ", error);
+    } finally {
+      setLoad(false);
     }
   };
 
@@ -173,9 +236,6 @@ const Medications = () => {
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
     },
   };
 
@@ -311,7 +371,8 @@ const Medications = () => {
             type="primary"
             onClick={handleBulkRegister}
             className="upload-button"
-            disabled={fileList.length === 0 || load}
+            loading={load}
+            disabled={fileList.length === 0}
             style={{ marginTop: '16px', width: '100%' }}
           >
             Upload Medications via Excel

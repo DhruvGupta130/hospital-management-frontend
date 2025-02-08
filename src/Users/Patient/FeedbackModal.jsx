@@ -26,7 +26,7 @@ const FeedbackModal = ({ feedbackModal, closeFeedbackModal, appointmentId }) => 
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [appointmentId]);
 
   useEffect(() => {
     if(appointmentId && feedbackModal){

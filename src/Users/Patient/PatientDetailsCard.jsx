@@ -6,6 +6,7 @@ import { displayImage, patientURL } from "../../Api & Services/Api.js";
 import PropTypes from 'prop-types';
 import { Image } from '@mui/icons-material';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import {getAvatarText} from "../../Api & Services/Services.js";
 
 const PatientDetailsCard = ({ patient, refreshProfileData }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -39,14 +40,6 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
   if (!patient) {
     return <p>Loading patient details...</p>;
   }
-
-  const getAvatarText = (fullName) => {
-    const titlesToSkip = ["Dr.", "Mr.", "Mrs.", "Ms."];
-    const names = fullName.split(' ').filter(name => !titlesToSkip.includes(name)); // Filter out titles
-    const firstLetter = names[0]?.charAt(0).toUpperCase();
-    const lastLetter = names[names.length - 1]?.charAt(0).toUpperCase();
-    return firstLetter + lastLetter;
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

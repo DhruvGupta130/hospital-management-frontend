@@ -1,6 +1,7 @@
-import React from "react";
+import "react";
 import { Card, List, Typography, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
 const { Title, Text } = Typography;
 
@@ -18,9 +19,9 @@ const CartSummary = ({ cart, medications, handleQuantityChange }) => {
           <List
             dataSource={cartItems}
             renderItem={(med) => (
-              <List.Item
+              <List.Item key={med.id}
                 actions={[
-                  <Button
+                  <Button key={med.id}
                     danger
                     size="small"
                     icon={<DeleteOutlined />}
@@ -40,6 +41,18 @@ const CartSummary = ({ cart, medications, handleQuantityChange }) => {
       )}
     </Card>
   );
+};
+
+CartSummary.propTypes = {
+  cart: PropTypes.objectOf(PropTypes.number).isRequired, // Cart object with medication IDs as keys and quantity as values
+  medications: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        medicationName: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+      })
+  ).isRequired,
+  handleQuantityChange: PropTypes.func.isRequired, // Function to modify cart quantity
 };
 
 export default CartSummary;

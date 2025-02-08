@@ -1,21 +1,11 @@
-import React, { useState, useEffect } from "react";
 import { Card, Typography, Carousel, Tooltip } from "antd";
-import { HomeOutlined, PhoneOutlined, GlobalOutlined, EnvironmentOutlined } from "@ant-design/icons";
+import { HomeOutlined, PhoneOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { displayImage } from "../Api & Services/Api";
+import PropTypes from "prop-types";
 
 const { Title, Text } = Typography;
 
 const HospitalCard = ({ hospital, onSelect, selected }) => {
-  const [imageIndex, setImageIndex] = useState(0);
-
-  useEffect(() => {
-    if (hospital.images && hospital.images.length > 1) {
-      const interval = setInterval(() => {
-        setImageIndex((prevIndex) => (prevIndex + 1) % hospital.images.length);
-      }, 3000); // Auto-slide every 3 seconds
-      return () => clearInterval(interval);
-    }
-  }, [hospital.images]);
 
   return (
     <Card
@@ -90,6 +80,21 @@ const HospitalCard = ({ hospital, onSelect, selected }) => {
       </div>
     </Card>
   );
+};
+
+HospitalCard.propTypes = {
+    hospital: PropTypes.shape({
+        hospitalName: PropTypes.string.isRequired,
+        images: PropTypes.arrayOf(PropTypes.string),
+        address: PropTypes.shape({
+            street: PropTypes.string,
+            city: PropTypes.string,
+            state: PropTypes.string,
+        }).isRequired,
+        phone: PropTypes.string,
+    }).isRequired,
+    onSelect: PropTypes.func.isRequired,
+    selected: PropTypes.object,
 };
 
 export default HospitalCard;

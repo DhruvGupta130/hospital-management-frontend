@@ -38,7 +38,7 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/dashboard" element={<AnalyticsDashboard />} />
-                <Route path="/profile/*" element={<CustomRoutesPages />} /> 
+                <Route path="/profile/*" element={<CustomRoutesPages />} />
                 <Route path="/nearby-hospitals" element={<HospitalListPage />} />
                 <Route path="/nearby-pharmacies" element={<PharmacyListPage />} />
                 <Route path="/contact" element={<Contact />} />
@@ -57,6 +57,16 @@ const App = () => {
                         </PrivateRoute>
                     }
                 />
+
+                <Route
+                    path="/patient/*"
+                    element={
+                        <PrivateRoute roles={['ROLE_PATIENT']}>
+                            <CustomRoutesPatient />
+                        </PrivateRoute>
+                    }
+                />
+
                 <Route
                     path="/hospital/*"
                     element={

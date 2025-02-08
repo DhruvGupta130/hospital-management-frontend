@@ -3,8 +3,9 @@ import axios from "axios";
 import { patientURL } from "../../Api & Services/Api.js";
 import AppointmentCard from "./AppointmentCard.jsx";
 import { Alert, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/material";
-import { CalendarMonthOutlined, CheckCircleOutline } from "@mui/icons-material";
+import {CalendarMonthOutlined, CheckCircleOutline, TransferWithinAStationOutlined} from "@mui/icons-material";
 import { convertTo12HourFormat } from "../../Api & Services/Services.js";
+import {useNavigate} from "react-router-dom";
 
 const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -16,18 +17,22 @@ const Appointments = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedHospital, setSelectedHospital] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState({
+    slotIndex: ''
+  });
   const [departments, setDepartments] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [slots, setSlots] = useState([]);
-  const [dropdownLoading, setDropdownLoading] = useState({
+  const [, setDropdownLoading] = useState({
     departments: false,
     hospitals: false,
     doctors: false,
     slots: false,
   });
+
+  const navigate = useNavigate();
 
   const fetchAppointments = async () => {
     setLoading(true);
@@ -173,7 +178,7 @@ const Appointments = () => {
 
   useEffect(() => {
     if (selectedDepartment && selectedHospital) fetchDoctors(selectedDepartment, selectedHospital.id);
-  }, [selectedHospital]);
+  }, [selectedDepartment, selectedHospital]);
 
   useEffect(() => {
     if (selectedDoctor && selectedDate) fetchSlots(selectedDoctor.id, selectedDate);
@@ -316,11 +321,13 @@ const Appointments = () => {
             </FormControl>
           </DialogContent>
 
+          <Button variant="contained" sx={{marginX: 3}} endIcon={<TransferWithinAStationOutlined/>} onClick={() => navigate("/appointment/book")}>Open Page in Full Window</Button>
+
           <DialogActions>
-            <Button onClick={handleCloseModal} color="primary">
+            <Button onClick={handleCloseModal} color="error">
               Cancel
             </Button>
-            <Button onClick={handleBookAppointment} color="primary" loading={load}>
+            <Button onClick={handleBookAppointment} color="success" loading={load}>
               Book Appointment
             </Button>
           </DialogActions>

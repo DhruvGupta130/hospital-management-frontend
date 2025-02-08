@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, Modal, message, Upload, Steps, Alert, Spin, Checkbox } from 'antd';
 import { GOOGLE_API_KEY, hospitalURL, URL } from "../../Api & Services/Api.js";
@@ -55,7 +55,7 @@ const Hospital = () => {
   });
 
   const fetchHospital = async () => {
-    fetchHospitalProfileData(setHospital, setLoading, setError);
+    await fetchHospitalProfileData(setHospital, setLoading, setError);
   };
 
   useEffect(() => {
@@ -159,7 +159,7 @@ const Hospital = () => {
   const handleRegisterHospital = async () => {
     console.log(newHospital);
     setLoad(true);
-    if (newHospital.images.length === 0 || newHospital.images === null) {
+    if (newHospital.images.length === 0) {
       message.error("Please Upload images");
       return;
     }

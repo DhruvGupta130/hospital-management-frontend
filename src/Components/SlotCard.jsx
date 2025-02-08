@@ -1,7 +1,8 @@
-import React from "react";
+import "react";
 import { Card, Typography, Tag } from "antd";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { convertTo12HourFormat } from "../Api & Services/Services";
+import PropTypes from "prop-types";
 
 const { Title } = Typography;
 
@@ -26,6 +27,16 @@ const SlotCard = ({ slot, onSelect, selected }) => {
       <Tag color={slot.available ? "green" : "red"}>{slot.available ? "Available" : "Not Available"}</Tag>
     </Card>
   );
+};
+
+SlotCard.propTypes = {
+    slot: PropTypes.shape({
+        startTime: PropTypes.string.isRequired,
+        endTime: PropTypes.string.isRequired,
+        available: PropTypes.bool.isRequired,
+    }).isRequired,
+    onSelect: PropTypes.func.isRequired, // Function triggered on selection
+    selected: PropTypes.object, // Selected slot object (optional)
 };
 
 export default SlotCard;

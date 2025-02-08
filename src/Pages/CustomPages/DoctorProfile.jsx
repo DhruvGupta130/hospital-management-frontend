@@ -2,9 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { patientURL } from "../../Api & Services/Api";
-import { Spin, Typography, Card } from "antd";
+import { Spin, Typography } from "antd";
 
-const { Title, Text } = Typography;
+const {Text } = Typography;
 
 const DoctorProfile = () => {
     const [doctor, setDoctor] = useState(null);
@@ -12,6 +12,19 @@ const DoctorProfile = () => {
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+        const userRole = localStorage.getItem("role");
+
+        console.log(userRole);
+
+        if (!isAuthenticated) {
+            window.location.href="/login";
+        } else if (userRole !== "ROLE_PATIENT") {
+            window.location.href="/not-authorized";
+        }
+    }, [navigate]);
 
     useEffect(() => {
         fetchDoctor();

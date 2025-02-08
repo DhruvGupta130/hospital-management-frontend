@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { TextField, Typography, Button, Alert, CircularProgress, Box } from "@mui/material";
-import { CheckCircleOutlineOutlined, Update } from "@mui/icons-material";
+import { TextField, Typography, Button, Alert, Box } from "@mui/material";
+import { CheckCircleOutlineOutlined } from "@mui/icons-material";
 import axios from "axios";
 import { securedURL } from "../../Api & Services/Api.js";
 

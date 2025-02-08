@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, Card, Typography, Spin, Alert, Button, Modal, Form } from "antd";
+import { Table, Card, Typography, Spin, Alert, Button, Modal } from "antd";
 import axios from "axios";
 import { hospitalURL } from "../../Api & Services/Api.js";
 import { formatGender } from "../../Api & Services/Services.js";
@@ -63,7 +63,8 @@ const Patients = () => {
       });
       setMedicalRecords(response.data);
     } catch (err) {
-      setError("Error fetching medical history. Please try again!");
+      setError(err?.response?.data?.message || "Error fetching medical history. Please try again!");
+      console.error(err);
     } finally {
       setRecordLoading(false);
     }

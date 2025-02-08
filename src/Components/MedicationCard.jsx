@@ -1,18 +1,17 @@
-import React from "react";
+import "react";
 import { Card, Typography, InputNumber, Button, Space } from "antd";
 import { 
-  ShoppingCartOutlined, 
-  MedicineBoxOutlined, 
+  MedicineBoxOutlined,
   CalendarOutlined, 
-  DollarOutlined, 
-  DropboxOutlined, 
+  DropboxOutlined,
   FileTextOutlined 
 } from "@ant-design/icons";
 import { Add, CurrencyRupeeOutlined, Remove } from "@mui/icons-material";
+import PropTypes from "prop-types";
 
 const { Title, Text } = Typography;
 
-const MedicationCard = ({ med, cart, handleQuantityChange, setBought }) => {
+const MedicationCard = ({ med, cart, handleQuantityChange }) => {
   return (
     <Card
       hoverable
@@ -102,6 +101,21 @@ const MedicationCard = ({ med, cart, handleQuantityChange, setBought }) => {
       </div>
     </Card>
   );
+};
+
+MedicationCard.propTypes = {
+    med: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        medicationName: PropTypes.string.isRequired,
+        compositionName: PropTypes.string.isRequired,
+        dosageForm: PropTypes.string.isRequired,
+        expiry: PropTypes.string.isRequired,
+        quantity: PropTypes.number.isRequired,
+        price: PropTypes.number.isRequired,
+    }).isRequired,
+    cart: PropTypes.objectOf(PropTypes.number).isRequired,
+    handleQuantityChange: PropTypes.func.isRequired,
+    setBought: PropTypes.func,
 };
 
 export default MedicationCard;

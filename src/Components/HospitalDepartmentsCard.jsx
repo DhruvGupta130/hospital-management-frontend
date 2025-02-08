@@ -1,6 +1,7 @@
 import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp } from "@mui/icons-material";
 import { Card, Col, Row } from "antd";
 import Title from "antd/es/typography/Title";
+import PropTypes from "prop-types";
 
 const iconMapping = {
   Cardiology: <Favorite fontSize="large" color="error" />,
@@ -52,5 +53,9 @@ const HospitalDepartmentsCard = ({ departments }) => {
   
   );
 }
+
+HospitalDepartmentsCard.propTypes = {
+  departments: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
 
 export default HospitalDepartmentsCard;

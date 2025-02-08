@@ -108,7 +108,7 @@ const DoctorProfile = () => {
       });
       message.success(response.data.message);
       closeModal();
-      fetchDoctor();
+      await fetchDoctor();
     } catch (err) {
       message.error(err.response?.data?.message || "Failed to update profile. Please try again.");
     } finally {

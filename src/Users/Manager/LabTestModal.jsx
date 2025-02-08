@@ -3,6 +3,7 @@ import { Modal, Form, Input, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { hospitalURL, URL } from "../../Api & Services/Api";
+import PropTypes from "prop-types";
 
 const LabTestModal = ({ labModalVisible, setLabModalVisible, recordId }) => {
   const [fileList, setFileList] = useState([]);
@@ -147,6 +148,12 @@ const LabTestModal = ({ labModalVisible, setLabModalVisible, recordId }) => {
       </Form>
     </Modal>
   );
+};
+
+LabTestModal.propTypes = {
+  labModalVisible: PropTypes.bool.isRequired,
+  setLabModalVisible: PropTypes.func.isRequired,
+  recordId: PropTypes.string.isRequired,
 };
 
 export default LabTestModal;

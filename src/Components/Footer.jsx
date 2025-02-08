@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Typography, Box, Container, Grid } from "@mui/material";
+import {Typography, Box, Container, Grid2} from "@mui/material";
 import { Card } from "antd";
 import { FacebookFilled, TwitterSquareFilled, LinkedinFilled, MailFilled, PhoneFilled, GlobalOutlined } from "@ant-design/icons";
 
@@ -7,20 +7,20 @@ function Footer() {
   return (
     <Card style={{ backgroundColor: "#001529", color: "#fff", borderRadius: 0, boxShadow: "none", padding: "40px 0" }}>
       <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="space-between">
+        <Grid2 container spacing={4} justifyContent="space-between">
           
           {/* Branding & Tagline */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid2 size={{xs: 12, sm: 6, md: 3}}>
             <Typography variant="h4" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
               AyuMed
             </Typography>
             <Typography variant="body1" color="gray" style={{ fontFamily: "Poppins, sans-serif" }}>
               Empowering your healthcare journey with precision and care.
             </Typography>
-          </Grid>
+          </Grid2>
 
           {/* Quick Links */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid2 size={{xs: 12, sm: 6, md: 2}}>
             <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
               Quick Links
             </Typography>
@@ -37,10 +37,10 @@ function Footer() {
                 </Link>
               ))}
             </Box>
-          </Grid>
+          </Grid2>
 
           {/* Support */}
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid2 size={{xs: 12, sm: 6, md: 2}}>
             <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
               Support
             </Typography>
@@ -57,10 +57,10 @@ function Footer() {
                 </Link>
               ))}
             </Box>
-          </Grid>
+          </Grid2>
 
           {/* Contact Info */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid2 size={{xs: 12, sm: 6, md: 3}}>
             <Typography variant="h5" fontWeight="bold" gutterBottom style={{ fontFamily: "Poppins, sans-serif", color: "#40a9ff" }}>
               Contact
             </Typography>
@@ -80,12 +80,12 @@ function Footer() {
               <Typography variant="body1" color="gray">
                 <GlobalOutlined style={{ color: "#40a9ff" }} />{" "}
                 <a href="https://www.ayumed.com" style={{ textDecoration: "none", color: "#d9d9d9" }}>
-                  www.ayumed.com
+                  www.AyuMed.com
                 </a>
               </Typography>
             </Box>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
 
         {/* Social Media */}
         <Box sx={{ textAlign: "center", mt: 4 }}>

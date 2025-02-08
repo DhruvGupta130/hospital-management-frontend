@@ -29,11 +29,7 @@ export const fetchHospitalProfileData = async (setHospital, setLoading, setError
     });
     setHospital(response.data);
   } catch (error) {
-    if (error?.response?.status === 204) {
-      setError(error.response.data?.message);
-    } else {
-    setError("Error while fetching hospital details. Please try again!");
-  }
+    setError(error?.response?.data?.message || "Error while fetching hospital details. Please try again!");
     console.error('Error in fetching hospital: ', error);
   } finally{
     setLoading(false);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import { Modal, Table, message } from 'antd';
 import axios from 'axios';
 import {doctorURL, IMAGE_URL} from '../../Api & Services/Api';
@@ -11,30 +11,31 @@ const LabTestView = ({ visible, setVisible, medicalId}) => {
     const [loading, setLoading] = useState(false);
     const [testResults, setTestResults] = useState([]);
 
-    const fetchLabTests = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${doctorURL}/lab-tests/${medicalId}`, {
-                headers: {
-                Authorization: `Bearer ${token}`,
-                },
-            });
-            setTestResults(response.data);
-            console.log(response.data);
-        } catch (error) {
-            message.error("Error fetching Lab Tests. Please try again later.");
-            console.error('Error fetching Lab Tests:', error);
-        } finally{
-            setLoading(false);
-        }
-    };
+    const fetchLabTests = useCallback(
+        async () => {
+            setLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${doctorURL}/lab-tests/${medicalId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setTestResults(response.data);
+                console.log(response.data);
+            } catch (error) {
+                message.error("Error fetching Lab Tests. Please try again later.");
+                console.error('Error fetching Lab Tests:', error);
+            } finally{
+                setLoading(false);
+            }
+    },[medicalId]);
 
     useEffect(() => {
         if (visible && medicalId) {
           fetchLabTests();
         }
-      }, [visible, medicalId]);
+      }, [visible, medicalId, fetchLabTests]);
 
     const downloadFile = async (id) => {
         const test = testResults.find(test => test.id === id);

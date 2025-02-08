@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import { Modal, Table, message } from 'antd';
 import axios from 'axios';
 import { hospitalURL, IMAGE_URL } from '../../Api & Services/Api';
@@ -11,13 +11,13 @@ const LabTestView = ({ visible, setVisible, medicalId}) => {
     const [loading, setLoading] = useState(false);
     const [testResults, setTestResults] = useState([]);
 
-    const fetchLabTests = async () => {
+    const fetchLabTests = useCallback(async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(`${hospitalURL}/lab-tests/${medicalId}`, {
                 headers: {
-                Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
             setTestResults(response.data);
@@ -28,13 +28,13 @@ const LabTestView = ({ visible, setVisible, medicalId}) => {
         } finally{
             setLoading(false);
         }
-    };
+    }, [medicalId]);
 
     useEffect(() => {
         if (visible && medicalId) {
           fetchLabTests();
         }
-      }, [visible, medicalId]);
+      }, [visible, medicalId, fetchLabTests]);
 
     const downloadFile = async (id) => {
         const test = testResults.find(test => test.id === id);

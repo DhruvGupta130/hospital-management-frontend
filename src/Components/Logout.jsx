@@ -7,7 +7,7 @@ const Logout = () => {
 
   useEffect(() => {
     localStorage.removeItem("token");
-    localStorage.setItem("isAuthenticated", false);
+    localStorage.setItem("isAuthenticated", "false");
     localStorage.removeItem("role");
     setTimeout(() => {
       navigate("/login");

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import axios from "axios";
 import { patientURL } from "../Api & Services/Api.js";
 import { Card, Button, Input, message, Typography, Row, Col } from "antd";
-import { ShoppingCartOutlined, CheckCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import { useNavigate, useSearchParams } from "react-router-dom"; // ✅ Import useSearchParams
 import MedicationCard from "../Components/MedicationCard.jsx";
 import CartSummary from "../Components/CartSummary.jsx";
@@ -11,33 +11,32 @@ import { Box, CircularProgress } from "@mui/material";
 const { Title } = Typography;
 
 const BuyMedicationsPage = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    const userRole = localStorage.getItem("role");
+
+    console.log(userRole);
+
+    if (!isAuthenticated) {
+      window.location.href="/login";
+    } else if (userRole !== "ROLE_PATIENT") {
+      window.location.href="/not-authorized";
+    }
+  }, [navigate]);
+
   const [medications, setMedications] = useState([]);
   const [filteredMedications, setFilteredMedications] = useState([]);
   const [cart, setCart] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchQuery = searchParams.get("search") || "";
 
-  useEffect(() => {
-    if (localStorage.getItem("isAuthenticated") === "false") {
-      navigate("/login");
-    } else if (localStorage.getItem("role") !== "ROLE_PATIENT") {
-      navigate("/not-authorized");
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchMedications();
-  }, []);
-
-  useEffect(() => {
-    handleSearch(searchQuery);
-  }, [searchQuery, medications]);
-
-  const fetchMedications = async () => {
+  const fetchMedications = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -47,20 +46,29 @@ const BuyMedicationsPage = () => {
       setMedications(res.data);
       setFilteredMedications(res.data);
     } catch (err) {
-      message.error("Error fetching medications.");
+      console.error(err);
+      message.error(err?.response?.data?.message || "Error fetching medications.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSearch = (value) => {
+  useEffect(() => {
+    fetchMedications();
+  }, [fetchMedications]);
+
+  const handleSearch = useCallback((value) => {
     setSearchParams(value ? { search: value } : {});
     const filtered = medications.filter((med) =>
-      med.medicationName.toLowerCase().includes(value.toLowerCase()) || 
-      med.compositionName.toLowerCase().includes(value.toLowerCase())
+        med.medicationName.toLowerCase().includes(value.toLowerCase()) ||
+        med.compositionName.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredMedications(filtered);
-  };
+  }, [medications, setSearchParams]);
+
+  useEffect(() => {
+    handleSearch(searchQuery);
+  }, [searchQuery, medications, handleSearch]);
 
   const handleQuantityChange = (medicationId, quantity) => {
     setCart((prevCart) => ({

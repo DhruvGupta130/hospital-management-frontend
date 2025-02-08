@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Button, Table, Card, Spin, Alert } from 'antd';
-import { UploadOutlined, UserAddOutlined } from '@ant-design/icons';
-import { patientURL, pharmacyURL } from '../../Api & Services/Api';
+import { patientURL } from '../../Api & Services/Api';
 import Title from 'antd/es/typography/Title';
 import { MedicationSharp } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +24,7 @@ const Medications = () => {
       setMedications(response.data);
       console.log(response.data);
     } catch (error) {
-      if(error.response.status !=500){
+      if(error.response.status !==500){
         setError(error?.response?.data?.message);
       } else{
         setError("Error while fetching Medications. Please try again!");
@@ -124,7 +123,7 @@ const Medications = () => {
             style={{ marginBottom: '16px' }}
         />)}            
         {!loading && !error && (
-            <Button type="primary" icon={<MedicationSharp/>}className="register-button" onClick={() => navigate('/order-medicines')}>
+            <Button type="primary" icon={<MedicationSharp/>} className="register-button" onClick={() => navigate('/order-medicines')}>
                 Buy Medications
             </Button>
         )}

@@ -3,12 +3,11 @@ import { displayImage } from "../../Api & Services/Api.js";
 import { 
   PhoneOutlined, MailOutlined, GlobalOutlined, HomeOutlined, FieldTimeOutlined, ShopOutlined, 
   SafetyCertificateOutlined, HeartOutlined, HddOutlined, EnvironmentOutlined, BankOutlined, 
-  CompassOutlined, CheckCircleOutlined, LaptopOutlined, StarOutlined, HeartTwoTone, 
-  MedicineBoxOutlined, ProfileOutlined, PlusCircleOutlined, InfoCircleOutlined
-} from '@ant-design/icons'; 
-import PropTypes, { string } from 'prop-types';
+  CompassOutlined, CheckCircleOutlined, LaptopOutlined, StarOutlined, MedicineBoxOutlined, InfoCircleOutlined
+} from '@ant-design/icons';
 import { stringToList } from '../../Api & Services/Services.js';
 import HospitalDepartmentsCard from '../../Components/HospitalDepartmentsCard.jsx';
+import PropTypes from "prop-types";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -193,5 +192,35 @@ const HospitalInfo = ({ hospital }) => {
     </Layout>
   );
 };
+
+HospitalInfo.propTypes = {
+  hospital: PropTypes.shape({
+    hospitalName: PropTypes.string.isRequired,
+    mobile: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    website: PropTypes.string,
+    establishedYear: PropTypes.number.isRequired,
+    emergencyServices: PropTypes.bool,
+    icuCapacity: PropTypes.number,
+    bedCapacity: PropTypes.number,
+    operationTheaters: PropTypes.number,
+    overview: PropTypes.string,
+    images: PropTypes.arrayOf(PropTypes.string),
+    specialities: PropTypes.arrayOf(PropTypes.string),
+    technology: PropTypes.string,
+    accreditations: PropTypes.string,
+    insurancePartners: PropTypes.arrayOf(PropTypes.string),
+    address: PropTypes.shape({
+      street: PropTypes.string.isRequired,
+      city: PropTypes.string.isRequired,
+      state: PropTypes.string.isRequired,
+      zip: PropTypes.string.isRequired,
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired,
+    }).isRequired,
+    departments: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+};
+
 
 export default HospitalInfo;

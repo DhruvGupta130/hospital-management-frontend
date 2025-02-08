@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, Modal, message, Upload, Steps, Alert, Spin } from 'antd';
 import { GOOGLE_API_KEY, pharmacyURL, URL } from '../../Api & Services/Api';
@@ -147,7 +147,7 @@ const Pharmacy = () => {
   const handleRegisterPharmacy = async () => {
     setLoad(true);
     console.log(newPharmacy);
-    if (newPharmacy.images.length === 0 || newPharmacy.images === null) {
+    if (newPharmacy.images.length === 0) {
       message.error("Please Upload images");
       return;
     }    

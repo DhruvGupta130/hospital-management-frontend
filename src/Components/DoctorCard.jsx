@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Typography, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { displayImage } from "../Api & Services/Api";
+import PropTypes from "prop-types";
 
 const { Title, Text } = Typography;
 
@@ -31,6 +32,16 @@ const DoctorCard = ({ doctor, onSelect, selected }) => {
       <Text type="secondary">{doctor.speciality}</Text>
     </Card>
   );
+};
+
+DoctorCard.propTypes = {
+    doctor: PropTypes.shape({
+        image: PropTypes.string,
+        fullName: PropTypes.string.isRequired,
+        speciality: PropTypes.string.isRequired,
+    }).isRequired,
+    onSelect: PropTypes.func.isRequired, // Function triggered on selection
+    selected: PropTypes.object, // Selected doctor object (optional)
 };
 
 export default DoctorCard;

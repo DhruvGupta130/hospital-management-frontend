@@ -14,6 +14,7 @@ const Doctors = () => {
   const [newDoctor, setNewDoctor] = useState({
     username: '',
     password: '',
+    confirmPassword: '',
     firstName: '',
     lastName: '',
     gender: '',
@@ -27,11 +28,11 @@ const Doctors = () => {
   const [loading, setLoading] = useState(false);
   const [load, setLoad] = useState(false);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem('token');
 
   const fetchDoctors = useCallback(async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.get(`${hospitalURL}/doctors`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ const Doctors = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchDoctors();
@@ -71,6 +72,7 @@ const Doctors = () => {
     setNewDoctor({
       username: '',
       password: '',
+      confirmPassword: '',
       firstName: '',
       lastName: '',
       gender: '',
@@ -93,20 +95,87 @@ const Doctors = () => {
 
   const handleRegisterDoctor = async () => {
     setLoad(true);
+
+    // Trim input fields to avoid unnecessary spaces
+    const trimmedDoctor = {
+      ...newDoctor,
+      firstName: newDoctor.firstName.trim(),
+      lastName: newDoctor.lastName.trim(),
+      department: newDoctor.department.trim(),
+      speciality: newDoctor.speciality.trim(),
+      licenseNumber: newDoctor.licenseNumber.trim(),
+      email: newDoctor.email.trim(),
+      mobile: newDoctor.mobile.trim(),
+    };
+
+    // Basic field validation
     if (
-      !newDoctor.firstName ||
-      !newDoctor.lastName ||
-      !newDoctor.department ||
-      !newDoctor.speciality ||
-      !newDoctor.licenseNumber ||
-      !newDoctor.email ||
-      !newDoctor.mobile
+        !trimmedDoctor.firstName ||
+        !trimmedDoctor.lastName ||
+        !trimmedDoctor.password ||
+        !trimmedDoctor.confirmPassword ||
+        !trimmedDoctor.department ||
+        !trimmedDoctor.speciality ||
+        !trimmedDoctor.licenseNumber ||
+        !trimmedDoctor.email ||
+        !trimmedDoctor.mobile
     ) {
-      message.error('Please fill in all the required fields.');
+      message.error("Please fill in all the required fields.");
+      setLoad(false);
       return;
     }
+
+    // Name validation (Only letters & spaces, no numbers or special characters)
+    const namePattern = /^[a-zA-Z\s]+$/;
+    if (!namePattern.test(trimmedDoctor.firstName) || !namePattern.test(trimmedDoctor.lastName)) {
+      message.error("First name and last name should contain only letters and spaces.");
+      setLoad(false);
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(trimmedDoctor.email)) {
+      message.error("Please enter a valid email address.");
+      setLoad(false);
+      return;
+    }
+
+    // Mobile number validation (Assuming Indian format: 10 digits)
+    const mobileRegex = /^[6-9]\d{9}$/;
+    if (!mobileRegex.test(trimmedDoctor.mobile)) {
+      message.error("Please enter a valid 10-digit mobile number.");
+      setLoad(false);
+      return;
+    }
+
+    // License Number Validation
+    const licensePattern = /^[A-Z0-9]{5,15}$/;
+    if (!licensePattern.test(trimmedDoctor.licenseNumber)) {
+      message.error("License number should be alphanumeric and 5-15 characters long.");
+      setLoad(false);
+      return;
+    }
+
+    if (trimmedDoctor.password !== trimmedDoctor.confirmPassword) {
+      message.error("Passwords do not match. Please try again.");
+      setLoad(false);
+      return;
+    }
+
+    // Password Strength Validation (Min 8 chars, at least 1 uppercase, 1 number, and 1 special character)
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordPattern.test(trimmedDoctor.password)) {
+      message.error(
+          "Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character."
+      );
+      setLoad(false);
+      return;
+    }
+
     try {
-      const response = await axios.post(`${hospitalURL}/doctors/register`, newDoctor, {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(`${hospitalURL}/doctors/register`, trimmedDoctor, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -115,7 +184,7 @@ const Doctors = () => {
       setIsRegisterModalVisible(false);
       await fetchDoctors();
     } catch (error) {
-      message.error(error?.response?.data?.message || 'An error occurred, please try again');
+      message.error(error?.response?.data?.message || "An error occurred, please try again.");
       console.error("Error in adding doctor: ", error);
     } finally {
       setLoad(false);
@@ -137,6 +206,7 @@ const Doctors = () => {
     formData.append('file', fileList[0]?.originFileObj);
 
     try {
+      const token = localStorage.getItem('token');
       const response = await axios.post(`${hospitalURL}/doctors/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -192,10 +262,10 @@ const Doctors = () => {
             )}
             {!loading && !error && (
               <div className='button-box'>
-                <Button type="primary" icon={<UserAddOutlined />} onClick={handleRegisterModalOpen} className="register-button" style={{ width: '100%' }}>
+                <Button type="primary" icon={<UserAddOutlined />} onClick={handleRegisterModalOpen} className="register-button" style={{ width: '100%', margin: 4 }}>
                   Add New Doctor
                 </Button>
-                <Button type="primary" icon={<UploadOutlined />} onClick={handleBulkUploadModalOpen} className="register-button" style={{ width: '100%' }}>
+                <Button type="primary" icon={<UploadOutlined />} onClick={handleBulkUploadModalOpen} className="register-button" style={{ width: '100%', margin: 4 }}>
                   Add Multiple Doctors
                 </Button>
               </div>
@@ -258,7 +328,7 @@ const Doctors = () => {
       >
         <Card>
           <Form layout="vertical" style={{ gap: '16px' }}>
-            {['username', 'password', 'firstName', 'lastName', 'gender', 'email', 'mobile', 'department', 'speciality', 'licenseNumber'].map((field) => (
+            {['username', 'password', 'confirmPassword', 'firstName', 'lastName', 'gender', 'email', 'mobile', 'department', 'speciality', 'licenseNumber'].map((field) => (
               <Form.Item
                 label={generateLabel(field)}
                 key={field}
@@ -279,7 +349,7 @@ const Doctors = () => {
                   name={field}
                   value={newDoctor[field]}
                   onChange={handleInputChange}
-                  type={field === 'password' ? 'password' : 'text'}
+                  type={field.toLowerCase().includes('password') ? 'password' : 'text'}
                 />
                 }
               </Form.Item>

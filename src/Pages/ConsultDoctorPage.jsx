@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import axios from "axios";
-import { Card, Row, Col, Typography, Button, Select, Space, Avatar, Modal, message, Tag, Spin, Input } from "antd";
-import { UserOutlined, CalendarOutlined, SearchOutlined, PhoneOutlined, MailOutlined, GlobalOutlined } from "@ant-design/icons";
-import { FormControl, InputLabel, MenuItem, TextField } from "@mui/material";
-import { displayImage, patientURL } from "../Api & Services/Api";
+import { Row, Col, Typography, Button, Select, Modal, message, Spin, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { MenuItem, TextField } from "@mui/material";
+import { patientURL } from "../Api & Services/Api";
 import DoctorProfileCard from "../Components/DoctorProfileCard";
 import { convertTo12HourFormat } from "../Api & Services/Services";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const { Title, Text } = Typography;
+const { Title} = Typography;
 const { Option } = Select;
 
 const ConsultDoctorPage = () => {
@@ -32,22 +32,21 @@ const ConsultDoctorPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchDoctors();
-  }, []);
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    const userRole = localStorage.getItem("role");
+
+    console.log(userRole);
+
+    if (!isAuthenticated) {
+      window.location.href="/login";
+    } else if (userRole !== "ROLE_PATIENT") {
+      window.location.href="/not-authorized";
+    }
+  }, [navigate]);
 
   useEffect(() => {
-    applyFilters(selectedDepartment, selectedSpecialty, searchQuery);
-  }, [selectedDepartment, selectedSpecialty, searchQuery, doctors]);
-
-  const getTimeSlot = (slot) => {
-    if (!slot || !slot.startTime || !slot.endTime) {
-      return 'Invalid time slot';
-    }
-    const startTimeFormatted = convertTo12HourFormat(slot.startTime);
-    const endTimeFormatted = convertTo12HourFormat(slot.endTime);
-    const availability = slot.available ? 'Available' : 'Not Available';
-    return `${startTimeFormatted} - ${endTimeFormatted} (${availability})`;
-  };
+    fetchDoctors();
+  }, []);
 
   const fetchDoctors = async () => {
     setLoading(true);
@@ -61,30 +60,41 @@ const ConsultDoctorPage = () => {
       setSpecialties([...new Set(response.data.map((doc) => doc.speciality))]);
       setDepartments([...new Set(response.data.map((doc) => doc.department))]);
     } catch (err) {
-      message.error("Error fetching doctors.");
+      console.error(err);
+      message.error(err.response.data.message || "Error fetching doctors.");
     } finally {
       setLoading(false);
     }
   };
 
-  const applyFilters = (department, specialty, search) => {
+  const applyFilters = useCallback((department, specialty, search) => {
     let filtered = doctors;
-
     if (department) {
       filtered = filtered.filter((doc) => doc.department === department);
     }
-
     if (specialty) {
       filtered = filtered.filter((doc) => doc.speciality === specialty);
     }
-
     if (search) {
       filtered = filtered.filter((doc) =>
-        doc.fullName.toLowerCase().includes(search.toLowerCase())
+          doc.fullName.toLowerCase().includes(search.toLowerCase())
       );
     }
-
     setFilteredDoctors(filtered);
+  }, [doctors]);
+
+  useEffect(() => {
+    applyFilters(selectedDepartment, selectedSpecialty, searchQuery);
+  }, [selectedDepartment, selectedSpecialty, searchQuery, doctors, applyFilters]);
+
+  const getTimeSlot = (slot) => {
+    if (!slot || !slot.startTime || !slot.endTime) {
+      return 'Invalid time slot';
+    }
+    const startTimeFormatted = convertTo12HourFormat(slot.startTime);
+    const endTimeFormatted = convertTo12HourFormat(slot.endTime);
+    const availability = slot.available ? 'Available' : 'Not Available';
+    return `${startTimeFormatted} - ${endTimeFormatted} (${availability})`;
   };
 
   const handleSearchChange = (value) => {
@@ -107,7 +117,8 @@ const ConsultDoctorPage = () => {
       });
       setSlots(res.data);
     } catch (err) {
-      message.error("Error fetching slots.");
+      console.error(err);
+      message.error(err.message.data.message || "Error fetching slots.");
     }
   };
 
@@ -166,7 +177,7 @@ const ConsultDoctorPage = () => {
         <Col xs={24} sm={12} md={8}>
           <Select
             placeholder="Filter by Department"
-            style={{ width: "100%", borderRadius: "6px" }}
+            style={{ width: "100%", borderRadius: "6px", height: '100%' }}
             value={selectedDepartment}
             onChange={(value) => handleFilterChange("department", value)}
           >
@@ -179,7 +190,7 @@ const ConsultDoctorPage = () => {
         <Col xs={24} sm={12} md={8}>
           <Select
             placeholder="Filter by Specialty"
-            style={{ width: "100%", borderRadius: "6px" }}
+            style={{ width: "100%", borderRadius: "6px", height: '100%' }}
             value={selectedSpecialty}
             onChange={(value) => handleFilterChange("specialty", value)}
           >

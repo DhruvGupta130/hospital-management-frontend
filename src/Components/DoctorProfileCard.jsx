@@ -1,17 +1,18 @@
 import { Avatar, Button, Card, Row, Space, Tag, Typography } from "antd";
 import { displayImage } from "../Api & Services/Api";
 import { GlobalOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
 const {Title, Text} = Typography;
 
 const DoctorProfileCard = ({ doctors, setOpenModal, setSelectedDoctor }) => {
     return (
-        <Row style={{gap: 20}}>
+        <Row style={{gap: 20, display: "flex", justifyContent: 'center'}}>
         {doctors && doctors.map((doctor) => (
-            <Card
+            <Card key={doctor.id}
             hoverable
             style={{
-            width: 329,
+            width: 339,
             borderRadius: 10,
             boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)",
             }}
@@ -40,5 +41,21 @@ const DoctorProfileCard = ({ doctors, setOpenModal, setSelectedDoctor }) => {
         </Row>
     );
 }
+
+DoctorProfileCard.propTypes = {
+    doctors: PropTypes.arrayOf(
+        PropTypes.shape({
+            image: PropTypes.string,
+            fullName: PropTypes.string.isRequired,
+            speciality: PropTypes.string.isRequired,
+            department: PropTypes.string.isRequired,
+            mobile: PropTypes.string.isRequired,
+            email: PropTypes.string.isRequired,
+            licenseNumber: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+    setOpenModal: PropTypes.func.isRequired, // Function to toggle modal visibility
+    setSelectedDoctor: PropTypes.func.isRequired, // Function to set selected doctor
+};
 
 export default DoctorProfileCard;

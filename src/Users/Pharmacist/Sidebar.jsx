@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
-import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 // Icon for lab results
 import { GroupsOutlined, MedicalInformationOutlined, MedicalServicesOutlined } from "@mui/icons-material";

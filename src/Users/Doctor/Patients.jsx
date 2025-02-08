@@ -40,7 +40,8 @@ const Patients = () => {
         });
         setPatients(response.data);
       } catch (err) {
-        setError("Error while fetching patients. Please try again!");
+        console.error(err);
+        setError(err?.response?.data?.message || "Error while fetching patients. Please try again!");
       } finally {
         setLoading(false);
       }
@@ -71,7 +72,7 @@ const Patients = () => {
       });
       setMedicalRecords(response.data);
     } catch (err) {
-      setError("Error fetching medical history. Please try again!");
+      setError(err?.response?.data?.message || "Error fetching medical history. Please try again!");
     } finally {
       setRecordLoading(false);
     }

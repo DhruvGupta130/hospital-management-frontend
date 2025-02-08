@@ -2,16 +2,16 @@ import { Card, Row, Col, Typography, Button, Carousel, Layout, message, Tag, Div
 import { displayImage, pharmacyURL } from '../../Api & Services/Api';
 import { 
   PhoneOutlined, MailOutlined, GlobalOutlined, HomeOutlined, FieldTimeOutlined, ShopOutlined, 
-  SafetyCertificateOutlined, MedicineBoxOutlined, InfoCircleOutlined, BankOutlined, 
-  LaptopOutlined, StarOutlined, HeartTwoTone, EnvironmentOutlined,
+  MedicineBoxOutlined, InfoCircleOutlined, BankOutlined,
+  LaptopOutlined, StarOutlined, EnvironmentOutlined,
   CompassOutlined,
   LockOutlined,
   UnlockOutlined
-} from '@ant-design/icons'; 
-import PropTypes, { string } from 'prop-types';
+} from '@ant-design/icons';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { convertTo12HourFormat, stringToList } from '../../Api & Services/Services';
-import { LocalPharmacyOutlined, MenuOpenOutlined } from '@mui/icons-material';
+import { LocalPharmacyOutlined } from '@mui/icons-material';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -228,5 +228,33 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
     </Layout>
   );
 };
+
+PharmacyInfo.propTypes = {
+  Pharmacy: PropTypes.shape({
+    pharmacyName: PropTypes.string.isRequired,
+    mobile: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    website: PropTypes.string,
+    openingTime: PropTypes.string.isRequired,
+    closingTime: PropTypes.string.isRequired,
+    open: PropTypes.bool.isRequired,
+    overview: PropTypes.string.isRequired,
+    services: PropTypes.string.isRequired,
+    pharmacyTechnology: PropTypes.string.isRequired,
+    accreditations: PropTypes.string.isRequired,
+    insurancePartners: PropTypes.arrayOf(PropTypes.string).isRequired,
+    images: PropTypes.arrayOf(PropTypes.string),
+    address: PropTypes.shape({
+      street: PropTypes.string.isRequired,
+      city: PropTypes.string.isRequired,
+      state: PropTypes.string.isRequired,
+      zip: PropTypes.string.isRequired,
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired,
+    }).isRequired,
+  }).isRequired,
+  refreshPharmacyData: PropTypes.func,
+};
+
 
 export default PharmacyInfo;

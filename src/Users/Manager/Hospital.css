@@ -26,7 +26,6 @@
   margin: 20px;
 }
 
-
 /* Card for Bulk Upload Section */
 .bulk-register-card {
   background-color: #fff;
@@ -92,6 +91,11 @@
     }
     .profile-card{
       width: 100%;
+    }
+
+    .button-box{
+      display: block;
+      flex-direction: column;
     }
   
   }
