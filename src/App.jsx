@@ -42,11 +42,11 @@ const App = () => {
                 <Route path="/nearby-hospitals" element={<HospitalListPage />} />
                 <Route path="/nearby-pharmacies" element={<PharmacyListPage />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/logout" element={<Logout />} />
-                <Route path="/not-authorized" element={<NotAuthorized />} />
                 <Route path="/appointment/book" element={<AppointmentBookingPage/>} />
                 <Route path="/order-medicines" element={<MedicineStore />} />
                 <Route path="/consult-doctor" element={<ConsultDoctorPage/>} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/not-authorized" element={<NotAuthorized />} />
                 
                 {/* Protected Routes */}
                 <Route
