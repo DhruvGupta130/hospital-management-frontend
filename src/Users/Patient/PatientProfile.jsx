@@ -20,7 +20,7 @@ const PatientProfile = () => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);  
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchPatientProfileData(setPatient, setLoading, setError);
