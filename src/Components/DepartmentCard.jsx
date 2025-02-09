@@ -1,6 +1,6 @@
 import "react";
 import { Card, Typography } from "antd";
-import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp, StrollerOutlined, DashboardCustomizeSharp } from "@mui/icons-material";
+import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp, DashboardCustomizeSharp } from "@mui/icons-material";
 import PropTypes from "prop-types";
 
 const { Title } = Typography;

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Card, Row, Col, Typography, Button, Carousel, Layout, Tag, Divider, Space, Avatar, Spin } from "antd";
+import { Card, Row, Col, Typography, Button, Carousel, Layout, Tag, Divider, Space, Spin } from "antd";
 import { 
-  PhoneOutlined, MailOutlined, GlobalOutlined, HomeOutlined, ShopOutlined, SafetyCertificateOutlined, 
-  UserOutlined, MedicineBoxOutlined, BankOutlined, FieldTimeOutlined, 
+  PhoneOutlined, MailOutlined, GlobalOutlined, HomeOutlined, MedicineBoxOutlined, BankOutlined, FieldTimeOutlined,
   UnlockOutlined,
   LockOutlined,
   DashboardOutlined,
@@ -27,70 +26,52 @@ const PharmacyProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [medications, setMedications] = useState([]);
-  const [selectedMedications, setSelectedMedications] = useState({
-    medicationId: '',
-    quantity: ''
-  });
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-        const userRole = localStorage.getItem("role");
-
-        console.log(userRole);
-
-        if (!isAuthenticated) {
-            window.location.href="/login";
-        } else if (userRole !== "ROLE_PATIENT") {
-            window.location.href="/not-authorized";
+    const fetchPharmacy = useCallback(async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${patientURL}/pharmacy/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setPharmacy(response.data);
+        } catch (err) {
+            setError(err.response?.data?.message || "Error fetching pharmacy details.");
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
-    }, [navigate]);
+    }, [id]);
 
-
+    const fetchMedications = useCallback(async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${patientURL}/${id}/medications`,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                },
+            });
+            setMedications(response.data);
+        } catch (err) {
+            setError(err.response?.data?.message || "Error fetching medications details.");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    }, [id]);
+    
   useEffect(() => {
     fetchPharmacy();
-  }, []);
+  }, [fetchPharmacy]);
 
   useEffect(() => {
     if(pharmacy) {
         fetchMedications();
     }
-  }, [pharmacy]);
-
-  const fetchPharmacy = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${patientURL}/pharmacy/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setPharmacy(response.data);
-    } catch (err) {
-      setError(err.response?.data?.message || "Error fetching pharmacy details.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchMedications = async () => {
-    setLoading(true);
-    try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${patientURL}/${id}/medications`,{
-            headers:{
-                Authorization: `Bearer ${token}`
-            },
-        });
-        setMedications(response.data);
-    } catch (err) {
-        setError(err.response?.data?.message || "Error fetching medications details.");
-        console.error(err);
-    } finally {
-        setLoading(false);
-    }
-  };
+  }, [fetchMedications, pharmacy]);
 
   const convertTo12HourFormat = (time) => {
     if (!time) return "Not Available";
@@ -267,57 +248,63 @@ const PharmacyProfilePage = () => {
                 style={{ borderRadius: 10, boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", marginTop: 20 }}
                 >
                 {medications?.length > 0 ? (
-                    <Row gutter={[16, 16]} justify="start">
-                        {medications.map((med, index) => (
-                        <Col xs={24} sm={12} md={8} lg={6} key={index}>
-                            <Card 
-                            bordered 
-                            hoverable
-                            style={{
-                                borderRadius: 12, 
-                                textAlign: "center", 
-                                backgroundColor: "#ffffff", 
-                                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                                transition: "transform 0.2s",
-                            }}
-                            onClick={() => navigate(`/page/order-medicines?search=${med.medicationName}`)}
-                            onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.04)"}
-                            onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1.00)"}
-                            >
-                            <MedicineBoxOutlined style={{ fontSize: 24, color: "#52c41a", marginBottom: 10 }} />
-                            <Title level={4} style={{ marginBottom: 5 }}>{med.medicationName}</Title>
-                            
-                            <Tag color="blue" style={{ fontSize: 14, padding: "5px 10px", marginBottom: 8 }}>
-                                {med.dosageForm} | {med.strength}
-                            </Tag>
+                  <Row gutter={[16, 16]} justify="start">
+                    {medications.map((med, index) => (
+                      <Col xs={24} sm={12} md={8} lg={6} key={index}>
+                        <Card 
+                          bordered 
+                          hoverable={pharmacy.open}
+                          style={{
+                            borderRadius: 12, 
+                            textAlign: "center", 
+                            backgroundColor: "#ffffff", 
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                            transition: "transform 0.2s",
+                            opacity: pharmacy.open ? 1 : 0.6, // Reduce opacity if pharmacy is closed
+                            pointerEvents: pharmacy.open ? "auto" : "none", // Disable interactions if closed
+                          }}
+                          onClick={() => pharmacy.open && navigate(`/page/order-medicines?search=${med.medicationName}`)}
+                          onMouseEnter={(e) => pharmacy.open && (e.currentTarget.style.transform = "scale(1.04)")}
+                          onMouseLeave={(e) => pharmacy.open && (e.currentTarget.style.transform = "scale(1.00)")}
+                        >
+                          <MedicineBoxOutlined style={{ fontSize: 24, color: "#52c41a", marginBottom: 10 }} />
+                          <Title level={4} style={{ marginBottom: 5 }}>{med.medicationName}</Title>
+                          
+                          <Tag color="blue" style={{ fontSize: 14, padding: "5px 10px", marginBottom: 8 }}>
+                            {med.dosageForm} | {med.strength}
+                          </Tag>
 
-                            <Text type="secondary" style={{ fontSize: 16, display: "block", marginBottom: 10 }}>
-                                {med.compositionName} | ₹{med.price}
-                            </Text>
+                          <Text type="secondary" style={{ fontSize: 16, display: "block", marginBottom: 10 }}>
+                            {med.compositionName} | ₹{med.price}
+                          </Text>
 
+                          {pharmacy.open ? (
                             <Button 
-                                type="primary" 
-                                icon={<ShoppingCartOutlined />} 
-                                size="large"
-                                style={{ width: "100%", borderRadius: 6, backgroundColor: 'green' }}
-                                onClick={(e) => {
+                              type="primary" 
+                              icon={<ShoppingCartOutlined />} 
+                              size="large"
+                              style={{ width: "100%", borderRadius: 6, backgroundColor: 'green' }}
+                              onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/order-medicines?search=${med.medicationName}`);
-                                }}
+                                navigate(`/page/order-medicines?search=${med.medicationName}`);
+                              }}
                             >
-                                Buy Now
+                              Buy Now
                             </Button>
-                            </Card>
-                        </Col>
-                        ))}
-                    </Row>
-                    ) : (
-                    <Title level={4} style={{ textAlign: "center", color: "#ff4d4f" }}>
-                        No medications found.
-                    </Title>
-                    )}
-
-                   
+                          ) : (
+                            <Text type="danger" style={{ fontSize: 16, fontWeight: "bold" }}>
+                              🚫 Pharmacy Not Opened
+                            </Text>
+                          )}
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                ) : (
+                  <Title level={4} style={{ textAlign: "center", color: "#ff4d4f" }}>
+                    No medications found.
+                  </Title>
+                )}
                 </Card>
 
               <Divider />

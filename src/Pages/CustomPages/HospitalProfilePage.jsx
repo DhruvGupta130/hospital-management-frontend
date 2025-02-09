@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import {useState, useEffect, useCallback} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Row, Col, Typography, Button, Carousel, Layout, Tag, Divider, Space, Modal, message, Spin } from "antd";
@@ -36,17 +36,7 @@ const HospitalProfilePage = () => {
       return `${startTimeFormatted} - ${endTimeFormatted} (${availability})`;
     };
 
-  useEffect(() => {
-    fetchHospital();
-  }, []);
-
-  useEffect(() => {
-    if(hospital){
-      fetchDoctors();
-    }
-  }, [hospital]);
-
-  const fetchHospital = async () => {
+  const fetchHospital = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -60,9 +50,9 @@ const HospitalProfilePage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const fetchDoctors = async () => {
+  const fetchDoctors = useCallback(async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -76,7 +66,17 @@ const HospitalProfilePage = () => {
     } finally {
       setLoading(false);
     }
-  }
+  }, [id]);
+
+  useEffect(() => {
+    fetchHospital();
+  }, [fetchHospital]);
+
+  useEffect(() => {
+    if(hospital){
+      fetchDoctors();
+    }
+  }, [fetchDoctors, hospital]);
 
   const fetchSlots = async (doctorId, date) => {
     if (!doctorId || !date) return;
@@ -88,7 +88,8 @@ const HospitalProfilePage = () => {
       setSlots(res.data);
       setSelectedSlot(null);
     } catch (err) {
-      message.error("Error fetching slots.");
+      console.error(err);
+      message.error(err.response?.data?.message || "Error fetching slots.");
     }
   };
 

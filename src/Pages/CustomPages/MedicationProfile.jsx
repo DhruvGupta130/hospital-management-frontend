@@ -1,10 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { patientURL } from "../../Api & Services/Api";
-import { Spin, Typography, Card } from "antd";
+import { Spin, Typography } from "antd";
 
-const { Title, Text } = Typography;
+const {Text } = Typography;
 
 const MedicationProfile = () => {
     const [medication, setMedication] = useState(null);
@@ -26,17 +26,7 @@ const MedicationProfile = () => {
         }
     }, [navigate]);
 
-    useEffect(() => {
-        fetchMedication();
-    }, []);
-
-    useEffect(() => {
-        if (medication) {
-            navigate(`/page/order-medicines?search=${encodeURIComponent(medication.medicationName)}`);
-        }
-    }, [medication]);
-
-    const fetchMedication = async () => {
+    const fetchMedication = useCallback(async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
@@ -50,7 +40,17 @@ const MedicationProfile = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id]);
+
+    useEffect(() => {
+        fetchMedication();
+    }, [fetchMedication]);
+
+    useEffect(() => {
+        if (medication) {
+            navigate(`/page/order-medicines?search=${encodeURIComponent(medication.medicationName)}`);
+        }
+    }, [medication, navigate]);
 
     return (
         <div style={{ padding: 20, textAlign: "center" }}>
