@@ -26,19 +26,6 @@ const HospitalProfilePage = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-    const userRole = localStorage.getItem("role");
-
-    console.log(userRole);
-
-    if (!isAuthenticated) {
-      window.location.href="/login";
-    } else if (userRole !== "ROLE_PATIENT") {
-      window.location.href="/not-authorized";
-    }
-  }, [navigate]);
-
   const getTimeSlot = (slot) => {
       if (!slot || !slot.startTime || !slot.endTime) {
         return 'Invalid time slot';

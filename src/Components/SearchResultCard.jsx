@@ -12,7 +12,7 @@ import { convertTo12HourFormat } from "../Api & Services/Services.js";
 const getFormattedDetails = (value) => (value ? value : "N/A");
 
 function SearchResultCard({ result, type }) {
-  const linkTo = `/profile/${type.toLowerCase()}/${result.id}`;
+  const linkTo = `/page/profile/${type.toLowerCase()}/${result.id}`;
   
   const images = (() => {
     switch (type) {

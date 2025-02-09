@@ -1,14 +1,13 @@
 import "react";
 import { Card, Typography } from "antd";
-import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp } from "@mui/icons-material";
-import {SolutionOutlined} from "@ant-design/icons";
+import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp, StrollerOutlined, DashboardCustomizeSharp } from "@mui/icons-material";
 import PropTypes from "prop-types";
 
 const { Title } = Typography;
 
 // 🎯 Department Icon Mapping
 const departmentIcons = {
- Cardiology: <Favorite fontSize="large" color="error" />,
+  Cardiology: <Favorite fontSize="large" color="error" />,
    Neurology: <Psychology fontSize="large" color="primary" />,
    Ophthalmology: <Visibility fontSize="large" color="secondary" />,
    Orthopedics: <Healing fontSize="large" color="success" />,
@@ -47,7 +46,7 @@ const DepartmentCard = ({ name, onSelect, selected }) => {
         transition: "0.3s",
       }}
     >
-        {departmentIcons[name] || <SolutionOutlined style={{ fontSize: 60, color: "#1890ff" }} />}
+        {departmentIcons[name] || <DashboardCustomizeSharp fontSize="large" color="secondary" />}
 
       <Title level={5} style={{ marginTop: 10 }}>
         {name}

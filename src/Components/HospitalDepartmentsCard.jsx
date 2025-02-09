@@ -1,4 +1,4 @@
-import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp } from "@mui/icons-material";
+import { LocalHospital, Healing, Visibility, Favorite, Psychology, Vaccines, MedicalServices, Work, HealthAndSafety, LocalHospitalSharp, DashboardCustomizeSharp } from "@mui/icons-material";
 import { Card, Col, Row } from "antd";
 import Title from "antd/es/typography/Title";
 import PropTypes from "prop-types";
@@ -42,7 +42,7 @@ const HospitalDepartmentsCard = ({ departments }) => {
                     height: "100%",
                 }}
               >
-                {iconMapping[dept] || <MedicalServices fontSize="large" color="disabled" />}
+                {iconMapping[dept] || <DashboardCustomizeSharp fontSize="large" color="secondary" />}
                 <Title level={4} style={{ marginTop: "16px" }}>
                     {dept}
                 </Title>

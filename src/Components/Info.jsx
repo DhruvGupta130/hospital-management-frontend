@@ -28,19 +28,19 @@ const services = [
     title: "Book an Appointment",
     description: "Schedule a visit with a doctor at a nearby hospital.",
     icon: faCalendarCheck,
-    route: "/appointment/book",
+    route: "/page/appointment/book",
   },
   {
     title: "Consult a Doctor",
     description: "Get instant medical consultation with expert doctors.",
     icon: faUserMd,
-    route: "/consult-doctor",
+    route: "/page/consult-doctor",
   },
   {
     title: "Order Medicines Online",
     description: "Get your medicines delivered to your doorstep with ease.",
     icon: faPills,
-    route: "/order-medicines",
+    route: "/page/order-medicines",
   },
 ];
 

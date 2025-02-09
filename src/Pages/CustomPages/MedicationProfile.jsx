@@ -32,7 +32,7 @@ const MedicationProfile = () => {
 
     useEffect(() => {
         if (medication) {
-            navigate(`/order-medicines?search=${encodeURIComponent(medication.medicationName)}`);
+            navigate(`/page/order-medicines?search=${encodeURIComponent(medication.medicationName)}`);
         }
     }, [medication]);
 

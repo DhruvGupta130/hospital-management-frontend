@@ -1,6 +1,6 @@
 import { Avatar, Button, Card, Row, Space, Tag, Typography } from "antd";
 import { displayImage } from "../Api & Services/Api";
-import { GlobalOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
+import { CheckCircleFilled, GlobalOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 
 const {Title, Text} = Typography;
@@ -12,7 +12,7 @@ const DoctorProfileCard = ({ doctors, setOpenModal, setSelectedDoctor }) => {
             <Card key={doctor.id}
             hoverable
             style={{
-            width: 339,
+            width: 329,
             borderRadius: 10,
             boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.15)",
             }}
@@ -28,7 +28,7 @@ const DoctorProfileCard = ({ doctors, setOpenModal, setSelectedDoctor }) => {
                 <Text style={{fontSize: 16}}><PhoneOutlined /> {doctor.mobile}</Text>
                 <Text style={{fontSize: 16}}><MailOutlined /> {doctor.email}</Text>
                 <Text style={{fontSize: 16}}><GlobalOutlined /> License: {doctor.licenseNumber}</Text>
-                <Button type="primary" style={{width: '100%'}} 
+                <Button type="primary" icon={<CheckCircleFilled/>} style={{width: '100%'}} 
                 onClick={() => {
                     setOpenModal(true);
                     setSelectedDoctor(doctor);

@@ -20,9 +20,6 @@ import ForgotPassword from "./auth/ForgotPassword.jsx";
 import SearchPage from "./Pages/SearchPage.jsx";
 import "./Styles/Sidebar.css";
 import PharmacyListPage from "./Pages/PharmacyListPage.jsx";
-import AppointmentBookingPage from "./Pages/AppointmentBookingPage.jsx";
-import MedicineStore from "./Pages/MedicineStore.jsx";
-import ConsultDoctorPage from "./Pages/ConsultDoctorPage.jsx";
 
 
 const App = () => {
@@ -38,13 +35,9 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/dashboard" element={<AnalyticsDashboard />} />
-                <Route path="/profile/*" element={<CustomRoutesPages />} />
                 <Route path="/nearby-hospitals" element={<HospitalListPage />} />
                 <Route path="/nearby-pharmacies" element={<PharmacyListPage />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/appointment/book" element={<AppointmentBookingPage/>} />
-                <Route path="/order-medicines" element={<MedicineStore />} />
-                <Route path="/consult-doctor" element={<ConsultDoctorPage/>} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/not-authorized" element={<NotAuthorized />} />
                 
@@ -56,6 +49,15 @@ const App = () => {
                             <CustomRoutesPatient />
                         </PrivateRoute>
                     }
+                />
+
+                <Route 
+                    path="/page/*" 
+                    element={
+                        <PrivateRoute roles={['ROLE_PATIENT']}>
+                                <CustomRoutesPages />
+                        </PrivateRoute>
+                    }   
                 />
 
                 <Route

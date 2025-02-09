@@ -32,7 +32,7 @@ const DoctorProfile = () => {
 
     useEffect(() => {
         if (doctor) {
-            navigate(`/consult-doctor?search=${encodeURIComponent(doctor.fullName)}`);
+            navigate(`/page/consult-doctor?search=${encodeURIComponent(doctor.fullName)}`);
         }
     }, [doctor]);
 

@@ -321,7 +321,7 @@ const Appointments = () => {
             </FormControl>
           </DialogContent>
 
-          <Button variant="contained" sx={{marginX: 3}} endIcon={<TransferWithinAStationOutlined/>} onClick={() => navigate("/appointment/book")}>Open Page in Full Window</Button>
+          <Button variant="contained" sx={{marginX: 3}} endIcon={<TransferWithinAStationOutlined/>} onClick={() => navigate("/page/appointment/book")}>Open Page in Full Window</Button>
 
           <DialogActions>
             <Button onClick={handleCloseModal} color="error">

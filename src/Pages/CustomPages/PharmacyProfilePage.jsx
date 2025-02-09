@@ -280,7 +280,7 @@ const PharmacyProfilePage = () => {
                                 boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                                 transition: "transform 0.2s",
                             }}
-                            onClick={() => navigate(`/order-medicines?search=${med.medicationName}`)}
+                            onClick={() => navigate(`/page/order-medicines?search=${med.medicationName}`)}
                             onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.04)"}
                             onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1.00)"}
                             >

@@ -123,7 +123,7 @@ const Medications = () => {
             style={{ marginBottom: '16px' }}
         />)}            
         {!loading && !error && (
-            <Button type="primary" icon={<MedicationSharp/>} className="register-button" onClick={() => navigate('/order-medicines')}>
+            <Button type="primary" icon={<MedicationSharp/>} className="register-button" onClick={() => navigate('/page/order-medicines')}>
                 Buy Medications
             </Button>
         )}
