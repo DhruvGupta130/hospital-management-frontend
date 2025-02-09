@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from "react";
+import  {useState, useEffect, useCallback} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Card, Row, Col, Typography, Button, Carousel, Layout, Tag, Divider, Space, Spin } from "antd";
