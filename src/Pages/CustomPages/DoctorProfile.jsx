@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { patientURL } from "../../Api & Services/Api";
 import { Spin, Typography } from "antd";
@@ -26,17 +26,7 @@ const DoctorProfile = () => {
         }
     }, [navigate]);
 
-    useEffect(() => {
-        fetchDoctor();
-    }, []);
-
-    useEffect(() => {
-        if (doctor) {
-            navigate(`/page/consult-doctor?search=${encodeURIComponent(doctor.fullName)}`);
-        }
-    }, [doctor]);
-
-    const fetchDoctor = async () => {
+    const fetchDoctor = useCallback(async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
@@ -50,8 +40,19 @@ const DoctorProfile = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id]);
 
+    useEffect(() => {
+        fetchDoctor();
+    }, [fetchDoctor]);
+
+    useEffect(() => {
+        if (doctor) {
+            navigate(`/page/consult-doctor?search=${encodeURIComponent(doctor.fullName)}`);
+        }
+    }, [doctor, navigate]);
+
+    
     return (
         <div style={{ padding: 20, textAlign: "center" }}>
             {loading ? (
