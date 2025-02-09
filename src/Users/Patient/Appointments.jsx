@@ -158,7 +158,7 @@ const Appointments = () => {
       setSuccess(response.data.message);
       setTimeout(() => setSuccess(""), 2000);
       handleCloseModal();
-      fetchAppointments();
+      await fetchAppointments();
       setSelectedDate('');
     } catch (error) {
       setError(error?.response?.data?.message || "Error booking appointment.");
