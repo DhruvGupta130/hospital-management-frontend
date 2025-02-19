@@ -13,19 +13,6 @@ const MedicationProfile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-        const userRole = localStorage.getItem("role");
-
-        console.log(userRole);
-
-        if (!isAuthenticated) {
-            window.location.href="/login";
-        } else if (userRole !== "ROLE_PATIENT") {
-            window.location.href="/not-authorized";
-        }
-    }, [navigate]);
-
     const fetchMedication = useCallback(async () => {
         setLoading(true);
         try {
