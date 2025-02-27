@@ -110,7 +110,7 @@ const Hospital = () => {
         ...prevState,
         images: prevState.images.filter((image) => image !== file.thumbUrl),
       }));
-      message.success(response.data?.message);
+      message.success(response.data);
     } catch (error) {
       if(error.response?.data?.message){
         message.error(error.response.data.message);
@@ -284,61 +284,89 @@ const Hospital = () => {
         }
       );
     }
-  };  
+  };
 
   const validateStep = () => {
     const stepValidation = [
       // Step 1: Basic Details Validation
-      () => newHospital.hospitalName &&
-            newHospital.mobile &&
-            /^[0-9]{10}$/.test(newHospital.mobile) &&  // Ensure exactly 10 digits
-            newHospital.email &&
-            /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newHospital.email) &&  // Valid email format
-            newHospital.website &&
-            /^(http|https):\/\/[^ "]+$/.test(newHospital.website) && // Valid website format
-            newHospital.establishedYear &&
-            /^[0-9]{4}$/.test(newHospital.establishedYear),  // Ensure it's a valid year
-  
+      () => {
+        if (!newHospital.hospitalName) return { valid: false, error: "Hospital name is required." };
+        if (!newHospital.mobile) return { valid: false, error: "Mobile number is required." };
+        if (!/^[0-9]{10}$/.test(newHospital.mobile)) return { valid: false, error: "Invalid mobile number. Must be exactly 10 digits." };
+        if (!newHospital.email) return { valid: false, error: "Email is required." };
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newHospital.email)) return { valid: false, error: "Invalid email format." };
+        if (!newHospital.website) return { valid: false, error: "Website URL is required." };
+        if (!/^(http|https):\/\/[^ "]+$/.test(newHospital.website)) return { valid: false, error: "Invalid website URL format." };
+        if (!newHospital.establishedYear) return { valid: false, error: "Established year is required." };
+        if (!/^[0-9]{4}$/.test(newHospital.establishedYear)) return { valid: false, error: "Invalid established year format." };
+
+        return { valid: true };
+      },
+
       // Step 2: Description Validation
-      () => newHospital.overview &&
-            newHospital.specialities.length > 0 && // Ensure at least one speciality
-            typeof newHospital.emergencyServices === "boolean" && // Ensure it's a boolean
-            newHospital.technology,
-  
+      () => {
+        if (!newHospital.overview) return { valid: false, error: "Hospital overview is required." };
+        if (!newHospital.specialities.length) return { valid: false, error: "At least one speciality is required." };
+        if (typeof newHospital.emergencyServices !== "boolean") return { valid: false, error: "Emergency services must be true or false." };
+        if (!newHospital.technology) return { valid: false, error: "Technology details are required." };
+
+        return { valid: true };
+      },
+
       // Step 3: More Details Validation
-      () => newHospital.bedCapacity &&
-            newHospital.icuCapacity &&
-            newHospital.operationTheaters &&
-            newHospital.accreditations &&
-            newHospital.insurancePartners.length > 0,  // Ensure at least one insurance partner
-  
+      () => {
+        if (!newHospital.bedCapacity) return { valid: false, error: "Bed capacity is required." };
+        if (!newHospital.icuCapacity) return { valid: false, error: "ICU capacity is required." };
+        if (!newHospital.operationTheaters) return { valid: false, error: "Number of operation theaters is required." };
+        if (!newHospital.accreditations) return { valid: false, error: "Accreditations are required." };
+        if (!newHospital.insurancePartners.length) return { valid: false, error: "At least one insurance partner is required." };
+
+        return { valid: true };
+      },
+
       // Step 4: Location Validation
-      () => newHospital.address.latitude &&
-            newHospital.address.longitude,
-  
+      () => {
+        if (!newHospital.address.latitude) return { valid: false, error: "Latitude is required." };
+        if (!newHospital.address.longitude) return { valid: false, error: "Longitude is required." };
+
+        return { valid: true };
+      },
+
       // Step 5: Address Validation
-      () => newHospital.address.street &&
-            newHospital.address.city &&
-            newHospital.address.state &&
-            newHospital.address.zip &&
-            /^[0-9]{5,6}$/.test(newHospital.address.zip) && // Ensure zip is a valid number
-            newHospital.address.country,
-  
+      () => {
+        if (!newHospital.address.street) return { valid: false, error: "Street address is required." };
+        if (!newHospital.address.city) return { valid: false, error: "City is required." };
+        if (!newHospital.address.state) return { valid: false, error: "State is required." };
+        if (!newHospital.address.zip) return { valid: false, error: "ZIP code is required." };
+        if (!/^[0-9]{5,6}$/.test(newHospital.address.zip)) return { valid: false, error: "Invalid ZIP code. Must be 5 or 6 digits." };
+        if (!newHospital.address.country) return { valid: false, error: "Country is required." };
+
+        return { valid: true };
+      },
+
       // Step 6: Image Upload Validation
-      () => newHospital.images.length > 0, // Ensure at least one image is uploaded
+      () => {
+        if (!newHospital.images.length) return { valid: false, error: "At least one image must be uploaded." };
+
+        return { valid: true };
+      },
     ];
-  
+
     return stepValidation[currentStep]();
-  };  
-  
+  };
+
   const nextStep = () => {
-    if (!validateStep()) {
-      message.error('Please fill in all required fields');
+    const validationResult = validateStep();
+
+    if (!validationResult.valid) {
+      message.error(validationResult.error); // Show specific validation error
       return;
     }
+
     setCurrentStep(currentStep + 1);
   };
-  
+
+
   const prevStep = () => setCurrentStep(currentStep - 1);
 
   const steps = [

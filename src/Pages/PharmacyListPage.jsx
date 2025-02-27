@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import axios from 'axios';
 import { URL } from '../Api & Services/Api.js';
 import { Input, Button, Spin, Alert, Row, Col, Typography, InputNumber } from 'antd';
 import { Box } from '@mui/material';
 import { SearchOutlined } from '@ant-design/icons';
 import SearchResultCard from '../Components/SearchResultCard.jsx';
+import {useLocation} from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -17,30 +18,65 @@ const PharmacyListPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
+  const locationState = useLocation(); // Detects route changes
+
+  // Check if the user is on mobile
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  const fetchUserLocation = useCallback(() => {
     setLocationLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-        setLocationLoading(false); // ✅ Stop location loading
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-        setErrorMessage('Geolocation is not enabled or supported. Please enable it to fetch pharmacies.');
-        setLocationLoading(false); // ✅ Stop location loading even on error
-      },
-      { timeout: 10000 }
-    );
+    setErrorMessage('');
+
+    navigator.permissions.query({ name: 'geolocation' }).then((permission) => {
+      if (permission.state === 'denied') {
+        setErrorMessage('Location permission denied. Please enable it in your settings.');
+        setLocationLoading(false);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+            setLocationLoading(false);
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+            setErrorMessage('Geolocation is not enabled or supported. Please enable it to fetch pharmacies.');
+            setLocationLoading(false);
+          },
+          { timeout: 10000, enableHighAccuracy: true }
+      );
+    });
   }, []);
+
+  // Force location re-fetch on mobile when navigating back
+  useEffect(() => {
+    if (isMobile) {
+      setTimeout(() => {
+        fetchUserLocation();
+      }, 500); // Small delay to allow page re-render on mobile
+    } else {
+      fetchUserLocation();
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchUserLocation(); // Force re-fetch when the user returns to the tab
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [locationState, fetchUserLocation, isMobile]);
 
   const filteredPharmacies = pharmacies.filter(pharmacy =>
     pharmacy.pharmacyName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const fetchPharmacies = async () => {
+  const fetchPharmacies = useCallback(async () => {
     setErrorMessage('');
     setPharmacies([]);
     if (radius <= 0 || isNaN(radius)) {
@@ -57,19 +93,20 @@ const PharmacyListPage = () => {
         setPharmacies(response.data);
       } catch (error) {
         setErrorMessage('Error fetching pharmacies. Try again later.');
+        console.error(error);
       } finally {
         setLoading(false);
       }
     } else {
       setErrorMessage('Unable to fetch your location.');
     }
-  };
+  },[radius, userLocation.lat, userLocation.lon]);
 
   useEffect(() => {
     if (userLocation.lat && userLocation.lon && radius > 0) {
       fetchPharmacies();
     }
-  }, [userLocation, radius]);
+  }, [userLocation, radius, fetchPharmacies]);
 
   if (locationLoading) {
     return (

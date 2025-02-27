@@ -92,7 +92,6 @@ const AnalyticsDashboard = () => {
         setDemographics(demoRes.data);
         setTrends(trendRes.data);
         setDepartmentStats(departRes.data);
-        console.log(trendRes.data);
       } catch (error) {
         console.error(error);
         setError(error.response.data.message || "Error fetching analytics data.");

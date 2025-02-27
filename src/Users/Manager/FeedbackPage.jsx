@@ -43,7 +43,7 @@ const FeedbackPage = () => {
         style={{ borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)" }}
       >
         {loading ? (
-          <Spin size="large" tip="Loading feedbacks..." />
+            <Spin tip="Loading Feedbacks..." size="large" style={{ display: "block", margin: "auto" }} />
         ) : feedbacks.length > 0 ? (
           <Row gutter={[16, 16]}>
             {feedbacks.map((feedback) => (

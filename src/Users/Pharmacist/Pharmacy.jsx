@@ -52,8 +52,8 @@ const Pharmacy = () => {
     libraries: googleMapsLibraries,
   });
 
-  const fetchPharmacy = () => {
-    fetchPharmacyProfileData(setPharmacy, setLoading, setError);
+  const fetchPharmacy = async () => {
+    await fetchPharmacyProfileData(setPharmacy, setLoading, setError);
   };
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const Pharmacy = () => {
         ...prevState,
         images: prevState.images.filter((image) => image !== file.thumbUrl),
       }));
-      message.success(response.data?.message);
+      message.success(response.data);
     } catch (error) {
       if(error.response?.data?.message){
         message.error(error.response.data.message);
@@ -272,51 +272,78 @@ const Pharmacy = () => {
         }
       );
     }
-  };  
+  };
+
+  const validateStep = () => {
+    const stepValidation = [
+      // Step 1: Basic Details Validation
+      () => {
+        if (!newPharmacy.pharmacyName) return { valid: false, error: "Pharmacy name is required." };
+        if (!newPharmacy.mobile) return { valid: false, error: "Mobile number is required." };
+        if (!/^[0-9]{10}$/.test(newPharmacy.mobile)) return { valid: false, error: "Invalid mobile number. Must be exactly 10 digits." };
+        if (!newPharmacy.email) return { valid: false, error: "Email is required." };
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newPharmacy.email)) return { valid: false, error: "Invalid email format." };
+        if (!newPharmacy.website) return { valid: false, error: "Website URL is required." };
+        if (!/^(http|https):\/\/[^ "]+$/.test(newPharmacy.website)) return { valid: false, error: "Invalid website URL format." };
+        if (!newPharmacy.openingTime) return { valid: false, error: "Opening time is required." };
+        if (!newPharmacy.closingTime) return { valid: false, error: "Closing time is required." };
+
+        return { valid: true };
+      },
+
+      // Step 2: Accreditation & Services Validation
+      () => {
+        if (!newPharmacy.accreditations) return { valid: false, error: "Accreditations are required." };
+        if (!newPharmacy.insurancePartners.length) return { valid: false, error: "At least one insurance partner is required." };
+        if (!newPharmacy.overview) return { valid: false, error: "Overview is required." };
+        if (!newPharmacy.services) return { valid: false, error: "Services details are required." };
+        if (!newPharmacy.pharmacyTechnology) return { valid: false, error: "Pharmacy technology details are required." };
+
+        return { valid: true };
+      },
+
+      // Step 3: Location Validation
+      () => {
+        if (!newPharmacy.address.latitude) return { valid: false, error: "Latitude is required." };
+        if (!newPharmacy.address.longitude) return { valid: false, error: "Longitude is required." };
+
+        return { valid: true };
+      },
+
+      // Step 4: Address Validation
+      () => {
+        if (!newPharmacy.address.street) return { valid: false, error: "Street address is required." };
+        if (!newPharmacy.address.city) return { valid: false, error: "City is required." };
+        if (!newPharmacy.address.state) return { valid: false, error: "State is required." };
+        if (!newPharmacy.address.zip) return { valid: false, error: "ZIP code is required." };
+        if (!/^[0-9]{5,6}$/.test(newPharmacy.address.zip)) return { valid: false, error: "Invalid ZIP code. Must be 5 or 6 digits." };
+        if (!newPharmacy.address.country) return { valid: false, error: "Country is required." };
+
+        return { valid: true };
+      },
+
+      // Step 5: Image Upload Validation
+      () => {
+        if (!newPharmacy.images.length) return { valid: false, error: "At least one image must be uploaded." };
+
+        return { valid: true };
+      },
+    ];
+
+    return stepValidation[currentStep]();
+  };
 
   const nextStep = () => {
-    if (currentStep === 0) {
-      if (!newPharmacy.pharmacyName || 
-          !newPharmacy.mobile || !/^[0-9]{10}$/.test(newPharmacy.mobile) ||  // Ensure exactly 10 digits
-          !newPharmacy.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newPharmacy.email) || // Valid email format
-          !newPharmacy.website || !/^(http|https):\/\/[^ "]+$/.test(newPharmacy.website) || // Valid website format
-          !newPharmacy.openingTime || !newPharmacy.closingTime) {
-        message.error('Please fill in all required fields correctly');
-        return;
-      }
-    } else if (currentStep === 1) {
-      if (!newPharmacy.accreditations || 
-          !newPharmacy.insurancePartners.length || 
-          !newPharmacy.overview || 
-          !newPharmacy.services || 
-          !newPharmacy.pharmacyTechnology) {
-        message.error('Please fill in all required fields');
-        return;
-      }
-    } else if (currentStep === 2) {
-      if (!newPharmacy.address.latitude || !newPharmacy.address.longitude) {
-        message.error('Please select a location on the map');
-        return;
-      }
-    } else if (currentStep === 3) {
-      if (!newPharmacy.address.street || 
-          !newPharmacy.address.city || 
-          !newPharmacy.address.state || 
-          !newPharmacy.address.zip || !/^[0-9]{5,6}$/.test(newPharmacy.address.zip) ||  // Ensure valid zip code
-          !newPharmacy.address.country) {
-        message.error('Please complete the address details correctly');
-        return;
-      }
-    } else if (currentStep === 4) {
-      if (newPharmacy.images.length === 0) {
-        message.error('Please upload at least one image');
-        return;
-      }
+    const validationResult = validateStep();
+
+    if (!validationResult.valid) {
+      message.error(validationResult.error); // Show specific validation error
+      return;
     }
-  
+
     setCurrentStep(currentStep + 1);
   };
-  
+
   const prevStep = () => setCurrentStep(currentStep - 1);
 
   const steps = [

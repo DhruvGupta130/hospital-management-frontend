@@ -137,8 +137,8 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, borderRadius: '8px', width: '500px', maxWidth: '90%', padding: 3 }}>
           <Typography variant="h5" sx={{ fontWeight: '600', marginBottom: 2, textAlign:'center' }}>Edit Profile</Typography>
 
-          {success && <Alert severity='error' className='success-message'>{success}</Alert>}
-          {error && <Alert severity='success' className='error-message'>{error}</Alert>}
+          {error && <Alert severity='error' className='success-message'>{error}</Alert>}
+          {success && <Alert severity='success' className='error-message'>{success}</Alert>}
           {imagePreview && (
             <Box sx={{ marginBottom: 2, textAlign: 'center' }}>
               <img src={imagePreview} alt="Preview" style={{ width: '60%', maxHeight: '40vh', borderRadius: '8px', marginTop: '10px', border: '5px solid #2a3f54' }} />
@@ -159,6 +159,7 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
             fullWidth
             label="Aadhaar ID"
             name="aadhaarId"
+            type="number"
             value={updatedPatient.aadhaarId || ""}
             onChange={handleInputChange}
             margin="normal"
@@ -173,6 +174,7 @@ const PatientDetailsCard = ({ patient, refreshProfileData }) => {
           <TextField
             fullWidth
             label="Alternate Mobile Number"
+            type="number"
             name="alternateMobile"
             value={updatedPatient.alternateMobile || ""}
             onChange={handleInputChange}

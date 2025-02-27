@@ -58,7 +58,7 @@ const AppointmentContainer = () => {
         <Row gutter={[16, 16]}>
           {loading ? (
             <Col span={24} style={{padding: "40px 0" }}>
-              <Spin tip="Loading Appointment Data..." size="large" />
+              <Spin tip="Loading Appointments..." size="large" style={{ display: "block", margin: "auto" }} />
             </Col>
           ) : appointments.length > 0 ? (
             appointments.map((appointment) => (

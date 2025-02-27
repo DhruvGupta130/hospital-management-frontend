@@ -12,17 +12,22 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { convertTo12HourFormat, stringToList } from '../../Api & Services/Services';
 import { LocalPharmacyOutlined } from '@mui/icons-material';
+import {useState} from "react";
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
 
 const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
+
+  const [loading, setLoading] = useState(false);
+
   const redirectToMap = () => {
     const { latitude, longitude } = Pharmacy.address;
     window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, '_blank');
   };
 
   const handleToggleStatus = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
@@ -34,6 +39,8 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
       refreshPharmacyData?.();
     } catch (error) {
       message.error(error?.response?.data?.message || "Unable to update status");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,6 +117,7 @@ const PharmacyInfo = ({ Pharmacy, refreshPharmacyData }) => {
                       }}
                       disabled={isAfter(Pharmacy.openingTime, Pharmacy.closingTime)}
                       onClick={handleToggleStatus}
+                      loading={loading}
                     >
                       {Pharmacy.open ? (
                         <span><UnlockOutlined style={{ marginRight: 5 }} /> Opened</span>

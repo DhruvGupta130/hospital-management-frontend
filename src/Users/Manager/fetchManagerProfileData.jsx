@@ -20,6 +20,7 @@ export const fetchManagerProfileData = async (setManager, setLoading, setError) 
 }
 
 export const fetchHospitalProfileData = async (setHospital, setLoading, setError) => {
+  setLoading(true);
   try {
     const token = localStorage.getItem('token');
     const response = await axios.get(`${hospitalURL}`, {
