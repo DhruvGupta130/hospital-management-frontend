@@ -47,9 +47,9 @@ const DocumentViewer = ({ onUploadClick }) => {
         document.body.removeChild(link);
       }
     } catch (error) {
-      setError("Error uploading file!");
+      setError("Error getting file!");
       setTimeout(() => setError(""), 3000);
-      console.error("Error downloading file:", error);
+      console.error("Error getting file:", error);
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ const DocumentViewer = ({ onUploadClick }) => {
       setTimeout( async () => await fetchDocuments(), 2100);
     } catch (error) {
       if (error.response?.data?.message) {
-        setActionError(error.response.data.message || "Error uploading file!");
+        setActionError(error.response.data.message || "Error deleting file!");
       } else {
         setActionError("An error occurred. Please try again.");
       }
